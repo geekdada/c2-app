@@ -21,6 +21,8 @@ pnpm test:e2e     # Run Playwright e2e tests (builds first, serves on port 4173)
 
 Run a single test file: `pnpm vitest run path/to/file.test.ts`
 
+Never assume `pnpm dev` is not running. It is always running.
+
 ## Architecture
 
 ### Electron ↔ Renderer Split
