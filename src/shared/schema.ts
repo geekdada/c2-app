@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 import {
   appStateSchemaVersion,
@@ -11,42 +11,50 @@ import {
   type ManagedSecretKey,
   type Profile,
   type ProfileInput,
-} from "./profiles";
+} from './profiles'
 
 const managedEnvShape = Object.fromEntries(
-  managedEnvKeys.map((key) => [key, z.string().optional()]),
-) as Record<ManagedEnvKey, z.ZodOptional<z.ZodString>>;
+  managedEnvKeys.map((key) => [key, z.string().optional()])
+) as Record<ManagedEnvKey, z.ZodOptional<z.ZodString>>
 
-const managedEnvBaseSchema = z.object(managedEnvShape);
+const managedEnvBaseSchema = z.object(managedEnvShape)
 
 export const managedEnvSchema = managedEnvBaseSchema.superRefine((env, ctx) => {
   if (!hasCredential(env)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      path: ["ANTHROPIC_API_KEY"],
-      message: "Provide an API key or auth token.",
-    });
+      path: ['ANTHROPIC_API_KEY'],
+      message: 'Provide an API key or auth token.',
+    })
+  }
+
+  if (hasBothCredentials(env)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['ANTHROPIC_AUTH_TOKEN'],
+      message: 'Cannot set both API key and auth token.',
+    })
   }
 
   if (env.ANTHROPIC_BASE_URL && !isValidUrl(env.ANTHROPIC_BASE_URL)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      path: ["ANTHROPIC_BASE_URL"],
-      message: "Base URL must be a valid URL.",
-    });
+      path: ['ANTHROPIC_BASE_URL'],
+      message: 'Base URL must be a valid URL.',
+    })
   }
-});
+})
 
 export const profileInputSchema = z.object({
-  name: z.string().min(1, "Profile name is required."),
+  name: z.string().min(1, 'Profile name is required.'),
   env: managedEnvSchema,
-});
+})
 
 export const profileSchema = profileInputSchema.extend({
   id: z.string().min(1),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
-});
+})
 
 export const appStateSchema = z
   .object({
@@ -61,64 +69,70 @@ export const appStateSchema = z
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ["activeProfileId"],
-        message: "Active profile must exist in the profile list.",
-      });
+        path: ['activeProfileId'],
+        message: 'Active profile must exist in the profile list.',
+      })
     }
-  });
+  })
 
 export function isValidUrl(value: string): boolean {
-  try {
-    new URL(value);
-    return true;
-  } catch {
-    return false;
-  }
+  return z.url().safeParse(value).success
 }
 
 export function hasCredential(env: ManagedEnv): boolean {
-  return Boolean(env.ANTHROPIC_API_KEY || env.ANTHROPIC_AUTH_TOKEN);
+  return Boolean(env.ANTHROPIC_API_KEY || env.ANTHROPIC_AUTH_TOKEN)
 }
 
-export function normalizeOptionalString(value: string | null | undefined): string | undefined {
-  const trimmed = value?.trim();
+export function hasBothCredentials(env: ManagedEnv): boolean {
+  return Boolean(
+    env.ANTHROPIC_API_KEY?.trim() && env.ANTHROPIC_AUTH_TOKEN?.trim()
+  )
+}
 
-  return trimmed ? trimmed : undefined;
+export function normalizeOptionalString(
+  value: string | null | undefined
+): string | undefined {
+  const trimmed = value?.trim()
+
+  return trimmed ? trimmed : undefined
 }
 
 export function normalizeManagedEnv(
-  env: Partial<Record<ManagedEnvKey, string | null | undefined>>,
+  env: Partial<Record<ManagedEnvKey, string | null | undefined>>
 ): ManagedEnv {
   const normalizedEntries = managedEnvKeys.flatMap((key) => {
-    const value = normalizeOptionalString(env[key]);
+    const value = normalizeOptionalString(env[key])
 
-    return value ? ([[key, value]] as const) : [];
-  });
+    return value ? ([[key, value]] as const) : []
+  })
 
-  return Object.fromEntries(normalizedEntries) as ManagedEnv;
+  return Object.fromEntries(normalizedEntries) as ManagedEnv
 }
 
 export function sanitizeManagedEnvForImport(
-  env: Partial<Record<ManagedEnvKey, string | null | undefined>>,
+  env: Partial<Record<ManagedEnvKey, string | null | undefined>>
 ): ManagedEnv {
-  const normalized = normalizeManagedEnv(env);
+  const normalized = normalizeManagedEnv(env)
 
-  if (normalized.ANTHROPIC_BASE_URL && !isValidUrl(normalized.ANTHROPIC_BASE_URL)) {
-    delete normalized.ANTHROPIC_BASE_URL;
+  if (
+    normalized.ANTHROPIC_BASE_URL &&
+    !isValidUrl(normalized.ANTHROPIC_BASE_URL)
+  ) {
+    delete normalized.ANTHROPIC_BASE_URL
   }
 
-  return normalized;
+  return normalized
 }
 
 export function normalizeProfileInput(input: ProfileInput): ProfileInput {
   return {
     name: input.name.trim(),
     env: normalizeManagedEnv(input.env),
-  };
+  }
 }
 
 export function validateProfileInput(input: ProfileInput): ProfileInput {
-  return profileInputSchema.parse(normalizeProfileInput(input));
+  return profileInputSchema.parse(normalizeProfileInput(input))
 }
 
 export function validateProfile(profile: Profile): Profile {
@@ -126,27 +140,30 @@ export function validateProfile(profile: Profile): Profile {
     ...profile,
     name: profile.name.trim(),
     env: normalizeManagedEnv(profile.env),
-  });
+  })
 }
 
 export function validateAppState(state: AppState): AppState {
-  return appStateSchema.parse(state);
+  return appStateSchema.parse(state)
 }
 
-export function maskSecret(value: string | undefined, key: ManagedSecretKey): string {
+export function maskSecret(
+  value: string | undefined,
+  key: ManagedSecretKey
+): string {
   if (!value) {
-    return "Not set";
+    return 'Not set'
   }
 
   if (value.length <= 8) {
-    return `${key.toLowerCase()} configured`;
+    return `${key.toLowerCase()} configured`
   }
 
-  return `${value.slice(0, 4)}••••${value.slice(-4)}`;
+  return `${value.slice(0, 4)}••••${value.slice(-4)}`
 }
 
 export function isSecretKey(key: ManagedEnvKey): key is ManagedSecretKey {
-  return managedSecretKeys.includes(key as ManagedSecretKey);
+  return managedSecretKeys.includes(key as ManagedSecretKey)
 }
 
 export function summarizeManagedEnv(env: ManagedEnv): string[] {
@@ -155,37 +172,37 @@ export function summarizeManagedEnv(env: ManagedEnv): string[] {
     .map((key) =>
       isSecretKey(key)
         ? `${managedKeyLabels[key]}: ${maskSecret(env[key], key)}`
-        : `${managedKeyLabels[key]}: ${env[key]}`,
-    );
+        : `${managedKeyLabels[key]}: ${env[key]}`
+    )
 }
 
 export function diffManagedEnv(
   current: ManagedEnv,
-  next: ManagedEnv,
+  next: ManagedEnv
 ): {
-  added: ManagedEnvKey[];
-  removed: ManagedEnvKey[];
-  updated: ManagedEnvKey[];
+  added: ManagedEnvKey[]
+  removed: ManagedEnvKey[]
+  updated: ManagedEnvKey[]
 } {
   return managedEnvKeys.reduce(
     (diff, key) => {
-      const currentValue = current[key];
-      const nextValue = next[key];
+      const currentValue = current[key]
+      const nextValue = next[key]
 
       if (!currentValue && nextValue) {
-        diff.added.push(key);
+        diff.added.push(key)
       } else if (currentValue && !nextValue) {
-        diff.removed.push(key);
+        diff.removed.push(key)
       } else if (currentValue && nextValue && currentValue !== nextValue) {
-        diff.updated.push(key);
+        diff.updated.push(key)
       }
 
-      return diff;
+      return diff
     },
     {
       added: [] as ManagedEnvKey[],
       removed: [] as ManagedEnvKey[],
       updated: [] as ManagedEnvKey[],
-    },
-  );
+    }
+  )
 }
