@@ -9,7 +9,7 @@ import { useProfilesStore } from "./store/profiles";
 
 function LoadingScreen() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--app-bg)] px-6 py-12">
+    <div className="flex h-full items-center justify-center bg-[var(--app-bg)] px-6 py-12">
       <Card className="w-full max-w-lg border border-[var(--app-border)] bg-[var(--app-surface)] shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
         <CardContent className="space-y-3 p-8">
           <BrandBadge size="lg" />
@@ -32,7 +32,7 @@ function FatalErrorScreen() {
   const bootstrap = useProfilesStore((state) => state.bootstrap);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--app-bg)] px-6 py-12">
+    <div className="flex h-full items-center justify-center bg-[var(--app-bg)] px-6 py-12">
       <Card className="w-full max-w-xl border border-rose-400/35 bg-[var(--app-surface)] shadow-[0_24px_60px_rgba(0,0,0,0.28)]">
         <CardContent className="space-y-5 p-8">
           <div>
@@ -71,18 +71,21 @@ export default function App() {
     void bootstrap();
   }, [bootstrap]);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
-  if (error && profiles.length === 0 && !settingsSnapshot) {
-    return <FatalErrorScreen />;
-  }
-
   return (
-    <>
-      <AppRouter />
-      <ToastRegion />
-    </>
+    <div className="flex h-screen flex-col bg-[var(--app-bg)] text-[var(--app-text)]">
+      <div className="titlebar" />
+      <div className="min-h-0 flex-1">
+        {isLoading ? (
+          <LoadingScreen />
+        ) : error && profiles.length === 0 && !settingsSnapshot ? (
+          <FatalErrorScreen />
+        ) : (
+          <>
+            <AppRouter />
+            <ToastRegion />
+          </>
+        )}
+      </div>
+    </div>
   );
 }
