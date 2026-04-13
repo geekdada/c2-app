@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { app, BrowserWindow, shell } from "electron";
 
+import { registerPreferencesIpcHandlers } from "./ipc/preferences";
 import { registerProfileIpcHandlers } from "./ipc/profiles";
 import { registerSettingsIpcHandlers } from "./ipc/settings";
 import { createAppPaths } from "./services/paths";
@@ -50,8 +51,9 @@ async function createMainWindow(): Promise<void> {
 }
 
 app.whenReady().then(async () => {
-  const paths = createAppPaths(app.getPath("userData"), app.getPath("home"));
+  const paths = createAppPaths(app.getPath("home"));
 
+  registerPreferencesIpcHandlers(paths);
   registerProfileIpcHandlers(paths);
   registerSettingsIpcHandlers(paths);
   await createMainWindow();

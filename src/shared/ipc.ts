@@ -1,3 +1,4 @@
+import type { Preferences } from "./preferences";
 import type { ManagedEnv, Profile, ProfileInput } from "./profiles";
 
 export const ipcChannels = {
@@ -10,6 +11,8 @@ export const ipcChannels = {
   switchProfile: "profiles:switch",
   readClaudeSettingsSnapshot: "settings:readSnapshot",
   restoreBackup: "settings:restoreBackup",
+  getPreferences: "preferences:get",
+  savePreferences: "preferences:save",
 } as const;
 
 export type BackupEntry = {
@@ -43,6 +46,7 @@ export type BootstrapResult = {
   activeProfileId: string | null;
   importResult: ImportResult;
   settingsSnapshot: ClaudeSettingsSnapshot;
+  preferences: Preferences;
 };
 
 export type SwitchResult = {
@@ -61,6 +65,8 @@ export interface DesktopApi {
   switchProfile(id: string): Promise<SwitchResult>;
   readClaudeSettingsSnapshot(): Promise<ClaudeSettingsSnapshot>;
   restoreBackup(backupId: string): Promise<void>;
+  getPreferences(): Promise<Preferences>;
+  savePreferences(prefs: Preferences): Promise<void>;
 }
 
-export type { ProfileInput };
+export type { Preferences, ProfileInput };

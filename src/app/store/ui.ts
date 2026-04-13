@@ -1,5 +1,8 @@
 import { create } from "zustand";
 
+import { getDesktopApi } from "@/app/desktopApi";
+import type { ThemeMode } from "@/shared/preferences";
+
 export type ToastTone = "success" | "error" | "info";
 
 export type ToastItem = {
@@ -8,8 +11,6 @@ export type ToastItem = {
   title: string;
   description?: string;
 };
-
-type ThemeMode = "dark" | "light";
 
 type UiState = {
   currentSidebarKey: string;
@@ -47,14 +48,15 @@ export const useUiStore = create<UiState>((set) => ({
     });
   },
   setTheme: (theme) => {
-    set({
-      theme,
-    });
+    set({ theme });
+    void getDesktopApi().savePreferences({ theme });
   },
   toggleTheme: () => {
-    set((state) => ({
-      theme: state.theme === "dark" ? "light" : "dark",
-    }));
+    set((state) => {
+      const next = state.theme === "dark" ? "light" : "dark";
+      void getDesktopApi().savePreferences({ theme: next });
+      return { theme: next };
+    });
   },
   setHasCompletedOnboarding: (value) => {
     set({
