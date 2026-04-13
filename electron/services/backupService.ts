@@ -1,4 +1,4 @@
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, unlink } from "node:fs/promises";
 import path from "node:path";
 
 import type { BackupEntry } from "../../src/shared/ipc";
@@ -9,8 +9,19 @@ type BackupFile = BackupEntry & {
   settingsContents: string;
 };
 
+const MAX_BACKUPS = 5;
+
 function getBackupFilePath(paths: AppPaths, backupId: string): string {
   return path.join(paths.backupsDir, `${backupId}.json`);
+}
+
+async function pruneBackups(paths: AppPaths, keep: number): Promise<void> {
+  const backups = await listBackups(paths);
+  const toDelete = backups.slice(keep);
+
+  await Promise.all(
+    toDelete.map((backup) => unlink(getBackupFilePath(paths, backup.id))),
+  );
 }
 
 export async function createBackup(
@@ -26,6 +37,7 @@ export async function createBackup(
   };
 
   await writeJsonAtomic(getBackupFilePath(paths, backup.id), backup);
+  await pruneBackups(paths, MAX_BACKUPS);
 
   return {
     id: backup.id,
