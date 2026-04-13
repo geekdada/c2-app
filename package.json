@@ -10,13 +10,16 @@
     "typecheck": "tsc --noEmit",
     "lint": "oxlint .",
     "format": "oxfmt electron src e2e index.html package.json playwright.config.ts tsconfig.json vite.config.ts vitest.setup.ts",
-    "format:check": "oxfmt --check electron src e2e index.html package.json playwright.config.ts tsconfig.json vite.config.ts vitest.setup.ts",
+    "format:check": "pnpm format --check",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@fontsource-variable/geist-mono": "^5.2.7",
+    "@fontsource-variable/inter": "^5.2.8",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
+    "@tanstack/react-form": "^1.29.0",
     "lucide-react": "^1.8.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -48,5 +51,6 @@
     "onlyBuiltDependencies": [
       "electron"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }
