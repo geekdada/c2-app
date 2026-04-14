@@ -1,19 +1,26 @@
-import { Button, Card, CardContent, CardHeader, ToggleButton, ToggleButtonGroup } from '@heroui/react'
-import type { Key } from '@heroui/react'
-import { Monitor, MoonStar, RotateCcw, SunMedium } from 'lucide-react'
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@heroui/react";
+import type { Key } from "@heroui/react";
+import { Monitor, MoonStar, RotateCcw, SunMedium } from "lucide-react";
 
-import { useProfilesStore } from '@/app/store/profiles'
-import { useUiStore } from '@/app/store/ui'
-import { managedEnvKeys, managedKeyLabels } from '@/shared/profiles'
-import { isSecretKey, maskSecret } from '@/shared/schema'
+import { useProfilesStore } from "@/app/store/profiles";
+import { useUiStore } from "@/app/store/ui";
+import { managedEnvKeys, managedKeyLabels } from "@/shared/profiles";
+import { isSecretKey, maskSecret } from "@/shared/schema";
 
 export function AppSettingsPage() {
-  const settingsSnapshot = useProfilesStore((state) => state.settingsSnapshot)
-  const restoreBackup = useProfilesStore((state) => state.restoreBackup)
-  const isSaving = useProfilesStore((state) => state.isSaving)
-  const theme = useUiStore((state) => state.theme)
-  const setTheme = useUiStore((state) => state.setTheme)
-  const pushToast = useUiStore((state) => state.pushToast)
+  const settingsSnapshot = useProfilesStore((state) => state.settingsSnapshot);
+  const restoreBackup = useProfilesStore((state) => state.restoreBackup);
+  const isSaving = useProfilesStore((state) => state.isSaving);
+  const theme = useUiStore((state) => state.theme);
+  const setTheme = useUiStore((state) => state.setTheme);
+  const pushToast = useUiStore((state) => state.pushToast);
 
   return (
     <section className="space-y-4">
@@ -22,13 +29,11 @@ export function AppSettingsPage() {
       <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
           <CardHeader className="p-4">
-            <h2 className="text-lg font-semibold text-[var(--app-text)]">
-              Claude settings file
-            </h2>
+            <h2 className="text-lg font-semibold text-[var(--app-text)]">Claude settings file</h2>
             <p className="mt-1 text-sm text-[var(--app-text-muted)]">
               {settingsSnapshot?.exists
-                ? 'Current values read from disk.'
-                : 'Settings file not created yet — activate a profile to create it.'}
+                ? "Current values read from disk."
+                : "Settings file not created yet — activate a profile to create it."}
             </p>
           </CardHeader>
           <CardContent className="space-y-3 px-4 pb-4 pt-0">
@@ -37,7 +42,7 @@ export function AppSettingsPage() {
                 Path
               </p>
               <p className="mt-1.5 break-all font-mono text-sm text-[var(--app-text)]">
-                {settingsSnapshot?.path ?? 'Unavailable'}
+                {settingsSnapshot?.path ?? "Unavailable"}
               </p>
             </div>
 
@@ -49,20 +54,20 @@ export function AppSettingsPage() {
 
             <div className="grid gap-2 md:grid-cols-2">
               {managedEnvKeys.map((key) => {
-                const value = settingsSnapshot?.managedEnv[key]
+                const value = settingsSnapshot?.managedEnv[key];
                 const displayValue = value
                   ? isSecretKey(key)
                     ? maskSecret(value, key)
                     : value
-                  : null
+                  : null;
 
                 return (
                   <div
                     key={key}
                     className={`rounded-lg border p-3 ${
                       displayValue
-                        ? 'border-[var(--app-border)] bg-[var(--app-surface-muted)]'
-                        : 'border-transparent bg-[var(--app-surface-muted)]/40'
+                        ? "border-[var(--app-border)] bg-[var(--app-surface-muted)]"
+                        : "border-transparent bg-[var(--app-surface-muted)]/40"
                     }`}
                   >
                     <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--app-text-subtle)]">
@@ -71,14 +76,14 @@ export function AppSettingsPage() {
                     <p
                       className={`mt-1.5 break-all text-sm ${
                         displayValue
-                          ? 'font-mono text-[var(--app-text)]'
-                          : 'text-[var(--app-text-subtle)]'
+                          ? "font-mono text-[var(--app-text)]"
+                          : "text-[var(--app-text-subtle)]"
                       }`}
                     >
-                      {displayValue ?? 'Not set'}
+                      {displayValue ?? "Not set"}
                     </p>
                   </div>
-                )
+                );
               })}
             </div>
 
@@ -109,9 +114,7 @@ export function AppSettingsPage() {
         <div className="space-y-3">
           <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
             <CardHeader className="p-4 pb-0">
-              <h2 className="text-lg font-semibold text-[var(--app-text)]">
-                Appearance
-              </h2>
+              <h2 className="text-lg font-semibold text-[var(--app-text)]">Appearance</h2>
             </CardHeader>
             <CardContent className="p-4">
               <ToggleButtonGroup
@@ -119,8 +122,8 @@ export function AppSettingsPage() {
                 selectedKeys={new Set([theme])}
                 selectionMode="single"
                 onSelectionChange={(keys: Set<Key>) => {
-                  const value = [...keys][0] as 'light' | 'dark' | 'system'
-                  setTheme(value)
+                  const value = [...keys][0] as "light" | "dark" | "system";
+                  setTheme(value);
                 }}
               >
                 <ToggleButton id="light">
@@ -142,9 +145,7 @@ export function AppSettingsPage() {
           <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
             <CardHeader className="p-4 pb-0">
               <div>
-                <h2 className="text-lg font-semibold text-[var(--app-text)]">
-                  Backups
-                </h2>
+                <h2 className="text-lg font-semibold text-[var(--app-text)]">Backups</h2>
                 <p className="mt-1 text-sm text-[var(--app-text-muted)]">
                   Your settings are backed up before every profile switch.
                 </p>
@@ -170,25 +171,24 @@ export function AppSettingsPage() {
                       onPress={() => {
                         void restoreBackup(backup.id).then(() => {
                           pushToast({
-                            tone: 'success',
-                            title: 'Backup restored',
+                            tone: "success",
+                            title: "Backup restored",
                             description:
-                              'Claude settings were replaced with the selected snapshot.',
-                          })
-                        })
+                              "Claude settings were replaced with the selected snapshot.",
+                          });
+                        });
                       }}
                     >
                       <span className="flex items-center gap-2">
                         <RotateCcw className="h-4 w-4" />
-                        <span>{isSaving ? 'Restoring…' : 'Restore'}</span>
+                        <span>{isSaving ? "Restoring…" : "Restore"}</span>
                       </span>
                     </Button>
                   </div>
                 ))
               ) : (
                 <div className="rounded-lg border border-dashed border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3 text-sm leading-6 text-[var(--app-text-muted)]">
-                  No backups yet. Activate a profile to create the first
-                  backup.
+                  No backups yet. Activate a profile to create the first backup.
                 </div>
               )}
             </CardContent>
@@ -196,5 +196,5 @@ export function AppSettingsPage() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -19,9 +19,7 @@ async function pruneBackups(paths: AppPaths, keep: number): Promise<void> {
   const backups = await listBackups(paths);
   const toDelete = backups.slice(keep);
 
-  await Promise.all(
-    toDelete.map((backup) => unlink(getBackupFilePath(paths, backup.id))),
-  );
+  await Promise.all(toDelete.map((backup) => unlink(getBackupFilePath(paths, backup.id))));
 }
 
 export async function createBackup(

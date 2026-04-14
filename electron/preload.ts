@@ -1,6 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-import { ipcChannels, type DesktopApi, type Preferences, type ProfileInput } from "../src/shared/ipc";
+import {
+  ipcChannels,
+  type DesktopApi,
+  type Preferences,
+  type ProfileInput,
+} from "../src/shared/ipc";
 
 const api: DesktopApi = {
   bootstrap: () => ipcRenderer.invoke(ipcChannels.bootstrap),

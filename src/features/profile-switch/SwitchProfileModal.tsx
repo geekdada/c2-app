@@ -1,30 +1,26 @@
-import { Chip } from '@heroui/react'
-import type { ReactNode } from 'react'
+import { Chip } from "@heroui/react";
+import type { ReactNode } from "react";
 
-import { ConfirmationModal } from '@/components/layout/ConfirmationModal'
-import { diffManagedEnv } from '@/shared/schema'
-import {
-  type ManagedEnv,
-  type ManagedEnvKey,
-  type Profile,
-} from '@/shared/profiles'
+import { ConfirmationModal } from "@/components/layout/ConfirmationModal";
+import { diffManagedEnv } from "@/shared/schema";
+import { type ManagedEnv, type ManagedEnvKey, type Profile } from "@/shared/profiles";
 
 type SwitchProfileModalProps = {
-  isOpen: boolean
-  profile: Profile | null
-  currentManagedEnv: ManagedEnv
-  isBusy?: boolean
-  onClose: () => void
-  onConfirm: () => void | Promise<void>
-}
+  isOpen: boolean;
+  profile: Profile | null;
+  currentManagedEnv: ManagedEnv;
+  isBusy?: boolean;
+  onClose: () => void;
+  onConfirm: () => void | Promise<void>;
+};
 
 function renderKeyList(
   title: string,
   keys: ManagedEnvKey[],
-  color: 'accent' | 'warning' | 'danger'
+  color: "accent" | "warning" | "danger",
 ): ReactNode {
   if (keys.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -33,21 +29,17 @@ function renderKeyList(
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--app-text-subtle)]">
           {title}
         </p>
-        <span className="text-xs text-[var(--app-text-subtle)]">
-          {keys.length}
-        </span>
+        <span className="text-xs text-[var(--app-text-subtle)]">{keys.length}</span>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {keys.map((key) => (
           <Chip key={key} color={color} size="sm" variant="soft">
-            <Chip.Label className="font-mono text-[11px] tracking-[0.02em]">
-              {key}
-            </Chip.Label>
+            <Chip.Label className="font-mono text-[11px] tracking-[0.02em]">{key}</Chip.Label>
           </Chip>
         ))}
       </div>
     </section>
-  )
+  );
 }
 
 export function SwitchProfileModal({
@@ -59,10 +51,10 @@ export function SwitchProfileModal({
   onConfirm,
 }: SwitchProfileModalProps) {
   if (!profile) {
-    return null
+    return null;
   }
 
-  const diff = diffManagedEnv(currentManagedEnv, profile.env)
+  const diff = diffManagedEnv(currentManagedEnv, profile.env);
 
   return (
     <ConfirmationModal
@@ -72,9 +64,9 @@ export function SwitchProfileModal({
       details={
         <div className="space-y-4">
           <div className="grid gap-3">
-            {renderKeyList('Will add', diff.added, 'accent')}
-            {renderKeyList('Will update', diff.updated, 'warning')}
-            {renderKeyList('Will remove', diff.removed, 'danger')}
+            {renderKeyList("Will add", diff.added, "accent")}
+            {renderKeyList("Will update", diff.updated, "warning")}
+            {renderKeyList("Will remove", diff.removed, "danger")}
           </div>
         </div>
       }
@@ -85,5 +77,5 @@ export function SwitchProfileModal({
       onClose={onClose}
       onConfirm={onConfirm}
     />
-  )
+  );
 }

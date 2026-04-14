@@ -96,9 +96,7 @@ export function ProfileList({
                     </p>
                     <p
                       className={`mt-1.5 break-all text-sm ${
-                        value
-                          ? "font-mono text-[var(--app-text)]"
-                          : "text-[var(--app-text-subtle)]"
+                        value ? "font-mono text-[var(--app-text)]" : "text-[var(--app-text-subtle)]"
                       }`}
                     >
                       {value ?? "Not set"}
