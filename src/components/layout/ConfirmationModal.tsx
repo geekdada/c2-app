@@ -11,6 +11,7 @@ type ConfirmationModalProps = {
   tone?: "default" | "danger";
   details?: ReactNode;
   isBusy?: boolean;
+  panelClassName?: string;
   onConfirm: () => void | Promise<void>;
   onClose: () => void;
 };
@@ -24,6 +25,7 @@ export function ConfirmationModal({
   tone = "default",
   details,
   isBusy = false,
+  panelClassName,
   onConfirm,
   onClose,
 }: ConfirmationModalProps) {
@@ -51,13 +53,15 @@ export function ConfirmationModal({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-10 backdrop-blur-sm">
-      <div className="w-full max-w-xl rounded-[20px] border border-[var(--app-border)] bg-[var(--app-surface)] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
+      <div
+        className={`w-full rounded-[12px] border border-[var(--app-border)] bg-[var(--app-surface)] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.45)] ${panelClassName ?? "max-w-lg"}`}
+      >
         <div className="space-y-2">
           <h3 className="text-lg font-semibold text-[var(--app-text)]">{title}</h3>
           <p className="text-sm leading-6 text-[var(--app-text-muted)]">{description}</p>
         </div>
-        {details ? <div className="mt-4">{details}</div> : null}
-        <div className="mt-6 flex flex-wrap justify-end gap-3">
+        {details ? <div className="mt-3">{details}</div> : null}
+        <div className="mt-4 flex flex-wrap justify-end gap-3">
           <Button variant="secondary" onPress={onClose}>
             {cancelLabel}
           </Button>

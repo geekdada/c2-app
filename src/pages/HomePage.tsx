@@ -31,10 +31,10 @@ export function HomePage() {
   const deleteTarget = profiles.find((profile) => profile.id === deleteProfileId) ?? null;
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-4">
       {importResult?.status === "imported" ? (
         <Card className="border border-emerald-400/30 bg-emerald-400/10 shadow-none">
-          <CardContent className="flex flex-wrap items-center justify-between gap-4 p-5">
+          <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
             <div className="flex items-start gap-3">
               <Sparkles className="mt-1 h-5 w-5 text-emerald-300" />
               <div>
@@ -61,7 +61,7 @@ export function HomePage() {
 
       {error ? (
         <Card className="border border-rose-400/35 bg-rose-400/10 shadow-none">
-          <CardContent className="flex items-start gap-3 p-5">
+          <CardContent className="flex items-start gap-2 p-4">
             <TriangleAlert className="mt-1 h-5 w-5 text-rose-200" />
             <div>
               <p className="text-sm font-semibold text-rose-100">Last operation failed</p>

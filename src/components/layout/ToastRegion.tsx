@@ -28,7 +28,7 @@ function ToastCard({ toast }: ToastCardProps) {
         : "bg-sky-400";
 
   return (
-    <div className="pointer-events-auto flex min-w-[280px] max-w-[360px] gap-3 rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface)] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.28)]">
+    <div className="pointer-events-auto flex min-w-[280px] max-w-[360px] gap-3 rounded-lg border border-[var(--app-border)] bg-[var(--app-surface)] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.28)]">
       <div className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${accentColor}`} />
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-[var(--app-text)]">{toast.title}</p>
@@ -53,7 +53,7 @@ export function ToastRegion() {
   const toasts = useUiStore((state) => state.toasts);
 
   return (
-    <div className="pointer-events-none fixed right-6 top-6 z-[60] flex flex-col gap-3">
+    <div className="pointer-events-none fixed right-4 top-4 z-[60] flex flex-col gap-3">
       {toasts.map((toast) => (
         <ToastCard key={toast.id} toast={toast} />
       ))}

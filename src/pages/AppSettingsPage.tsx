@@ -16,12 +16,12 @@ export function AppSettingsPage() {
   const pushToast = useUiStore((state) => state.pushToast)
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-4">
       <h1 className="text-xl font-semibold text-[var(--app-text)]">Settings</h1>
 
       <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
-          <CardHeader className="p-5">
+          <CardHeader className="p-4">
             <h2 className="text-lg font-semibold text-[var(--app-text)]">
               Claude settings file
             </h2>
@@ -31,18 +31,18 @@ export function AppSettingsPage() {
                 : 'Settings file not created yet — activate a profile to create it.'}
             </p>
           </CardHeader>
-          <CardContent className="space-y-4 px-5 pb-5 pt-0">
-            <div className="rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-4">
+          <CardContent className="space-y-3 px-4 pb-4 pt-0">
+            <div className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--app-text-subtle)]">
                 Path
               </p>
-              <p className="mt-2 break-all font-mono text-sm text-[var(--app-text)]">
+              <p className="mt-1.5 break-all font-mono text-sm text-[var(--app-text)]">
                 {settingsSnapshot?.path ?? 'Unavailable'}
               </p>
             </div>
 
             {settingsSnapshot?.error ? (
-              <div className="rounded-2xl border border-rose-400/35 bg-rose-400/10 p-4 text-sm leading-6 text-rose-100">
+              <div className="rounded-lg border border-rose-400/35 bg-rose-400/10 p-3 text-sm leading-6 text-rose-100">
                 {settingsSnapshot.error}
               </div>
             ) : null}
@@ -59,7 +59,7 @@ export function AppSettingsPage() {
                 return (
                   <div
                     key={key}
-                    className={`rounded-xl border p-4 ${
+                    className={`rounded-lg border p-3 ${
                       displayValue
                         ? 'border-[var(--app-border)] bg-[var(--app-surface-muted)]'
                         : 'border-transparent bg-[var(--app-surface-muted)]/40'
@@ -69,7 +69,7 @@ export function AppSettingsPage() {
                       {managedKeyLabels[key]}
                     </p>
                     <p
-                      className={`mt-2 break-all text-sm ${
+                      className={`mt-1.5 break-all text-sm ${
                         displayValue
                           ? 'font-mono text-[var(--app-text)]'
                           : 'text-[var(--app-text-subtle)]'
@@ -82,11 +82,11 @@ export function AppSettingsPage() {
               })}
             </div>
 
-            <div className="rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-4">
+            <div className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3">
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--app-text-subtle)]">
                 Unmanaged environment variables
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-2 flex flex-wrap gap-2">
                 {settingsSnapshot?.unmanagedKeys.length ? (
                   settingsSnapshot.unmanagedKeys.map((key) => (
                     <span
@@ -106,14 +106,14 @@ export function AppSettingsPage() {
           </CardContent>
         </Card>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
-            <CardHeader className="p-5 pb-0">
+            <CardHeader className="p-4 pb-0">
               <h2 className="text-lg font-semibold text-[var(--app-text)]">
                 Appearance
               </h2>
             </CardHeader>
-            <CardContent className="p-5">
+            <CardContent className="p-4">
               <ToggleButtonGroup
                 disallowEmptySelection
                 selectedKeys={new Set([theme])}
@@ -140,7 +140,7 @@ export function AppSettingsPage() {
           </Card>
 
           <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
-            <CardHeader className="p-5 pb-0">
+            <CardHeader className="p-4 pb-0">
               <div>
                 <h2 className="text-lg font-semibold text-[var(--app-text)]">
                   Backups
@@ -150,12 +150,12 @@ export function AppSettingsPage() {
                 </p>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3 p-5">
+            <CardContent className="space-y-2 p-4">
               {settingsSnapshot?.backups.length ? (
                 settingsSnapshot.backups.map((backup) => (
                   <div
                     key={backup.id}
-                    className="rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-4"
+                    className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3"
                   >
                     <p className="text-sm font-medium text-[var(--app-text)]">
                       {new Date(backup.createdAt).toLocaleString()}
@@ -164,7 +164,7 @@ export function AppSettingsPage() {
                       {backup.id}
                     </p>
                     <Button
-                      className="mt-3"
+                      className="mt-2"
                       isDisabled={isSaving}
                       variant="secondary"
                       onPress={() => {
@@ -186,7 +186,7 @@ export function AppSettingsPage() {
                   </div>
                 ))
               ) : (
-                <div className="rounded-2xl border border-dashed border-[var(--app-border)] bg-[var(--app-surface-muted)] p-4 text-sm leading-6 text-[var(--app-text-muted)]">
+                <div className="rounded-lg border border-dashed border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3 text-sm leading-6 text-[var(--app-text-muted)]">
                   No backups yet. Activate a profile to create the first
                   backup.
                 </div>

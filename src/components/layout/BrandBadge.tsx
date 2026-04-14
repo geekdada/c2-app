@@ -3,9 +3,9 @@ type BrandBadgeProps = {
 };
 
 const sizeClasses: Record<NonNullable<BrandBadgeProps["size"]>, string> = {
-  sm: "h-10 w-10 rounded-xl text-sm",
-  md: "h-12 w-12 rounded-2xl text-base",
-  lg: "h-14 w-14 rounded-[20px] text-lg",
+  sm: "h-8 w-8 rounded-lg text-sm",
+  md: "h-10 w-10 rounded-xl text-base",
+  lg: "h-12 w-12 rounded-xl text-lg",
 };
 
 export function BrandBadge({ size = "md" }: BrandBadgeProps) {

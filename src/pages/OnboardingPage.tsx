@@ -25,19 +25,19 @@ export function OnboardingPage() {
   }, [navigate, profiles.length, setHasCompletedOnboarding]);
 
   return (
-    <div className="mx-auto flex h-full max-w-5xl items-center justify-center px-6 py-12">
+    <div className="mx-auto flex h-full max-w-5xl items-center justify-center px-4 py-8">
       <Card className="w-full border border-[var(--app-border)] bg-[var(--app-surface)] shadow-[0_24px_60px_rgba(0,0,0,0.26)]">
-        <CardContent className="space-y-8 p-8 md:p-10">
-          <div className="space-y-4">
+        <CardContent className="space-y-6 p-6 md:p-8">
+          <div className="space-y-3">
             <BrandBadge size="lg" />
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.22em] text-[var(--app-text-subtle)]">
                 Welcome to C2
               </p>
-              <h1 className="mt-3 text-3xl font-semibold text-[var(--app-text)]">
+              <h1 className="mt-2 text-3xl font-semibold text-[var(--app-text)]">
                 Create your first C2 profile
               </h1>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--app-text-muted)]">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--app-text-muted)]">
                 No reusable Anthropic credentials were found in `~/.claude/settings.json`, so C2
                 starts empty. Create a profile to store the six managed env values and activate it
                 whenever you want to rewrite Claude settings safely.
@@ -46,7 +46,7 @@ export function OnboardingPage() {
           </div>
 
           {settingsSnapshot?.error ? (
-            <div className="rounded-2xl border border-amber-400/35 bg-amber-400/10 p-4 text-sm text-amber-100">
+            <div className="rounded-lg border border-amber-400/35 bg-amber-400/10 p-3 text-sm text-amber-100">
               <div className="flex items-start gap-3">
                 <TriangleAlert className="mt-1 h-4 w-4 shrink-0" />
                 <div>
@@ -57,7 +57,7 @@ export function OnboardingPage() {
             </div>
           ) : null}
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-3">
             {[
               "Only six Anthropic keys are managed.",
               "Unmanaged Claude settings stay preserved.",
@@ -65,7 +65,7 @@ export function OnboardingPage() {
             ].map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-4 text-sm leading-6 text-[var(--app-text-muted)]"
+                className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3 text-sm leading-5 text-[var(--app-text-muted)]"
               >
                 {item}
               </div>

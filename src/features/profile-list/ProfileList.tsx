@@ -37,7 +37,7 @@ export function ProfileList({
   if (profiles.length === 0) {
     return (
       <Card className="border border-dashed border-[var(--app-border)] bg-[var(--app-surface-muted)] shadow-none">
-        <CardContent className="space-y-3 p-8">
+        <CardContent className="space-y-3 p-6">
           <h2 className="text-lg font-semibold text-[var(--app-text)]">No profiles yet</h2>
           <p className="max-w-2xl text-sm leading-6 text-[var(--app-text-muted)]">
             Create your first profile to manage Anthropic credentials and model aliases without
@@ -49,7 +49,7 @@ export function ProfileList({
   }
 
   return (
-    <div className="grid gap-4 xl:grid-cols-2">
+    <div className="grid gap-3 xl:grid-cols-2">
       {sortProfiles(profiles).map((profile) => {
         const isActive = profile.id === activeProfileId;
 
@@ -58,7 +58,7 @@ export function ProfileList({
             key={profile.id}
             className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none"
           >
-            <CardHeader className="flex flex-wrap items-start justify-between gap-3 p-5 pb-3">
+            <CardHeader className="flex flex-wrap items-start justify-between gap-2 p-4 pb-2">
               <div>
                 <div className="flex flex-wrap items-center gap-3">
                   <h3 className="text-lg font-semibold text-[var(--app-text)]">{profile.name}</h3>
@@ -74,14 +74,14 @@ export function ProfileList({
               </div>
             </CardHeader>
 
-            <CardContent className="grid gap-2 px-5 pb-4 pt-0 sm:grid-cols-2">
+            <CardContent className="grid gap-2 px-4 pb-3 pt-0 sm:grid-cols-2">
               {managedEnvKeys.map((key) => {
                 const value = formatManagedValue(profile, key);
 
                 return (
                   <div
                     key={key}
-                    className={`rounded-xl border p-3 ${
+                    className={`rounded-lg border p-2.5 ${
                       value
                         ? "border-[var(--app-border)] bg-[var(--app-surface-muted)]"
                         : "border-transparent bg-[var(--app-surface-muted)]/40"
@@ -104,7 +104,7 @@ export function ProfileList({
               })}
             </CardContent>
 
-            <CardFooter className="flex flex-wrap gap-3 px-5 pb-5 pt-1">
+            <CardFooter className="flex flex-wrap gap-2 px-4 pb-4 pt-1">
               {!isActive ? (
                 <Button
                   variant="primary"

@@ -91,7 +91,7 @@ export function ProfileForm({
   const [showSecrets, setShowSecrets] = useState(false);
   const [generalError, setGeneralError] = useState<string | null>(null);
   const inputClassName =
-    "mt-2 w-full rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface-muted)] px-4 py-3 text-sm text-[var(--app-text)] outline-none transition placeholder:text-[var(--app-text-subtle)] focus:border-[var(--app-border-strong)]";
+    "mt-2 w-full rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] px-3 py-2.5 text-sm text-[var(--app-text)] outline-none transition placeholder:text-[var(--app-text-subtle)] focus:border-[var(--app-border-strong)]";
 
   const form = useForm({
     defaultValues: initialValues,
@@ -155,13 +155,13 @@ export function ProfileForm({
 
   return (
     <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
-      <CardContent className="space-y-6 p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <CardContent className="space-y-4 p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--app-text-subtle)]">
               {mode === "create" ? "New profile" : "Edit profile"}
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-[var(--app-text)]">
+            <h2 className="mt-1.5 text-2xl font-semibold text-[var(--app-text)]">
               {mode === "create" ? "Create a profile" : `Edit ${profile?.name ?? "profile"}`}
             </h2>
           </div>
@@ -185,7 +185,7 @@ export function ProfileForm({
             void form.handleSubmit();
           }}
         >
-          <div className="w-full space-y-6">
+          <div className="w-full space-y-4">
             <form.Field
               name="name"
               children={(field) => (
@@ -210,7 +210,7 @@ export function ProfileForm({
               >
                 Provide either an API key or an auth token — at least one is required, but not both.
               </p>
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-3 lg:grid-cols-2">
                 {managedEnvKeys.map((key) => (
                   <form.Field
                     key={key}
@@ -273,7 +273,7 @@ export function ProfileForm({
             </div>
 
             {generalError ? (
-              <div className="rounded-2xl border border-rose-400/40 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+              <div className="rounded-lg border border-rose-400/40 bg-rose-400/10 px-3 py-2.5 text-sm text-rose-200">
                 {generalError}
               </div>
             ) : null}

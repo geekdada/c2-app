@@ -32,7 +32,7 @@ export function ProfileEditorPage() {
   if (id && !profile) {
     return (
       <Card className="border border-amber-400/35 bg-amber-400/10 shadow-none">
-        <CardContent className="space-y-4 p-6">
+        <CardContent className="space-y-3 p-4">
           <div className="flex items-start gap-3">
             <TriangleAlert className="mt-1 h-5 w-5 text-amber-200" />
             <div>
@@ -59,7 +59,7 @@ export function ProfileEditorPage() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-4">
       <Button
         variant="ghost"
         onPress={() => {
