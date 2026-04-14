@@ -42,6 +42,7 @@ body {
 
 button {
   font: inherit;
+  cursor: pointer;
 }
 
 .titlebar {
