@@ -16,6 +16,7 @@ type UiState = {
   currentSidebarKey: string;
   theme: ThemeMode;
   hasCompletedOnboarding: boolean;
+  showOnboarding: boolean;
   modals: {
     switchProfileId: string | null;
     deleteProfileId: string | null;
@@ -24,6 +25,7 @@ type UiState = {
   setCurrentSidebarKey: (key: string) => void;
   setTheme: (theme: ThemeMode) => void;
   setHasCompletedOnboarding: (value: boolean) => void;
+  setShowOnboarding: (value: boolean) => void;
   openSwitchModal: (profileId: string) => void;
   closeSwitchModal: () => void;
   openDeleteModal: (profileId: string) => void;
@@ -36,6 +38,7 @@ export const useUiStore = create<UiState>((set) => ({
   currentSidebarKey: "profiles",
   theme: "dark",
   hasCompletedOnboarding: false,
+  showOnboarding: false,
   modals: {
     switchProfileId: null,
     deleteProfileId: null,
@@ -53,6 +56,11 @@ export const useUiStore = create<UiState>((set) => ({
   setHasCompletedOnboarding: (value) => {
     set({
       hasCompletedOnboarding: value,
+    });
+  },
+  setShowOnboarding: (value) => {
+    set({
+      showOnboarding: value,
     });
   },
   openSwitchModal: (profileId) => {

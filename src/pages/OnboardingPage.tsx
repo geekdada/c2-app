@@ -1,28 +1,35 @@
 import { Button, Card, CardContent } from "@heroui/react";
-import { Plus, TriangleAlert } from "lucide-react";
+import { Download, Plus, TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useProfilesStore } from "@/app/store/profiles";
 import { useUiStore } from "@/app/store/ui";
 import { BrandBadge } from "@/components/layout/BrandBadge";
+import { hasCredential } from "@/shared/schema";
 
 export function OnboardingPage() {
   const navigate = useNavigate();
   const profiles = useProfilesStore((state) => state.profiles);
   const settingsSnapshot = useProfilesStore((state) => state.settingsSnapshot);
+  const createProfile = useProfilesStore((state) => state.createProfile);
+  const isSaving = useProfilesStore((state) => state.isSaving);
   const setHasCompletedOnboarding = useUiStore((state) => state.setHasCompletedOnboarding);
+  const showOnboarding = useUiStore((state) => state.showOnboarding);
+  const pushToast = useUiStore((state) => state.pushToast);
+
+  const hasExistingCredentials = hasCredential(settingsSnapshot?.managedEnv ?? {});
 
   useEffect(() => {
     setHasCompletedOnboarding(false);
   }, [setHasCompletedOnboarding]);
 
   useEffect(() => {
-    if (profiles.length > 0) {
+    if (profiles.length > 0 && !showOnboarding) {
       setHasCompletedOnboarding(true);
       navigate("/", { replace: true });
     }
-  }, [navigate, profiles.length, setHasCompletedOnboarding]);
+  }, [navigate, profiles.length, setHasCompletedOnboarding, showOnboarding]);
 
   return (
     <div className="mx-auto flex h-full max-w-5xl items-center justify-center px-4 py-8">
@@ -35,12 +42,29 @@ export function OnboardingPage() {
                 Welcome to C2
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-[var(--app-text)]">
-                Create your first C2 profile
+                {hasExistingCredentials
+                  ? "Create a profile from existing credentials"
+                  : "Create your first C2 profile"}
               </h1>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--app-text-muted)]">
-                No reusable Anthropic credentials were found in `~/.claude/settings.json`, so C2
-                starts empty. Create a profile to store the six managed env values and activate it
-                whenever you want to rewrite Claude settings safely.
+                {hasExistingCredentials ? (
+                  <>
+                    Existing credentials were found in{" "}
+                    <code className="rounded bg-[var(--app-surface-muted)] px-1.5 py-0.5 font-mono text-xs">
+                      ~/.claude/settings.json
+                    </code>
+                    . Import them into a new profile, or create one from scratch.
+                  </>
+                ) : (
+                  <>
+                    No Claude Code credentials were found in{" "}
+                    <code className="rounded bg-[var(--app-surface-muted)] px-1.5 py-0.5 font-mono text-xs">
+                      ~/.claude/settings.json
+                    </code>
+                    . Create a profile to manage your credentials and activate it whenever you want
+                    to rewrite Claude settings safely.
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -59,13 +83,13 @@ export function OnboardingPage() {
 
           <div className="grid gap-3 md:grid-cols-3">
             {[
-              "Only six Anthropic keys are managed.",
-              "Unmanaged Claude settings stay preserved.",
-              "Switching deletes stale managed keys before writing new values.",
+              "Only what matters to a profile is managed",
+              "Unmanaged Claude environment variables stay preserved.",
+              "Your settings are backed up.",
             ].map((item) => (
               <div
                 key={item}
-                className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3 text-sm leading-5 text-[var(--app-text-muted)]"
+                className="rounded-lg border text-balance border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3 text-sm leading-5 text-[var(--app-text-muted)]"
               >
                 {item}
               </div>
@@ -73,24 +97,40 @@ export function OnboardingPage() {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            {hasExistingCredentials ? (
+              <Button
+                variant="primary"
+                isDisabled={isSaving}
+                onPress={() => {
+                  void createProfile({
+                    name: "Imported profile",
+                    env: settingsSnapshot!.managedEnv,
+                  }).then((profile) => {
+                    pushToast({
+                      tone: "success",
+                      title: `Created ${profile.name}`,
+                      description: "Imported credentials from your existing Claude settings.",
+                    });
+                    navigate("/");
+                  });
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  <span>{isSaving ? "Importing…" : "Import existing credentials"}</span>
+                </span>
+              </Button>
+            ) : null}
             <Button
-              variant="primary"
+              variant={hasExistingCredentials ? "secondary" : "primary"}
               onPress={() => {
                 navigate("/profiles/new");
               }}
             >
               <span className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
-                <span>Create first profile</span>
+                <span>Create from scratch</span>
               </span>
-            </Button>
-            <Button
-              variant="secondary"
-              onPress={() => {
-                navigate("/settings");
-              }}
-            >
-              Review diagnostics
             </Button>
           </div>
         </CardContent>

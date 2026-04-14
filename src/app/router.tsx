@@ -8,12 +8,14 @@ import { OnboardingPage } from "@/pages/OnboardingPage";
 import { ProfileEditorPage } from "@/pages/ProfileEditorPage";
 
 import { useProfilesStore } from "./store/profiles";
+import { useUiStore } from "./store/ui";
 
 function RouteCoordinator() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLoading = useProfilesStore((state) => state.isLoading);
   const profilesCount = useProfilesStore((state) => state.profiles.length);
+  const showOnboarding = useUiStore((state) => state.showOnboarding);
 
   useEffect(() => {
     if (isLoading) {
@@ -25,10 +27,10 @@ function RouteCoordinator() {
       return;
     }
 
-    if (profilesCount > 0 && location.pathname === "/onboarding") {
+    if (profilesCount > 0 && location.pathname === "/onboarding" && !showOnboarding) {
       navigate("/", { replace: true });
     }
-  }, [isLoading, location.pathname, navigate, profilesCount]);
+  }, [isLoading, location.pathname, navigate, profilesCount, showOnboarding]);
 
   return null;
 }

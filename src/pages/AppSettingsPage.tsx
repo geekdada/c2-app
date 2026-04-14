@@ -7,7 +7,8 @@ import {
   ToggleButtonGroup,
 } from "@heroui/react";
 import type { Key } from "@heroui/react";
-import { Monitor, MoonStar, RotateCcw, SunMedium } from "lucide-react";
+import { BookOpen, Monitor, MoonStar, RotateCcw, SunMedium } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { useProfilesStore } from "@/app/store/profiles";
 import { useUiStore } from "@/app/store/ui";
@@ -15,11 +16,13 @@ import { managedEnvKeys, managedKeyLabels } from "@/shared/profiles";
 import { isSecretKey, maskSecret } from "@/shared/schema";
 
 export function AppSettingsPage() {
+  const navigate = useNavigate();
   const settingsSnapshot = useProfilesStore((state) => state.settingsSnapshot);
   const restoreBackup = useProfilesStore((state) => state.restoreBackup);
   const isSaving = useProfilesStore((state) => state.isSaving);
   const theme = useUiStore((state) => state.theme);
   const setTheme = useUiStore((state) => state.setTheme);
+  const setShowOnboarding = useUiStore((state) => state.setShowOnboarding);
   const pushToast = useUiStore((state) => state.pushToast);
 
   return (
@@ -191,6 +194,25 @@ export function AppSettingsPage() {
                   No backups yet. Activate a profile to create the first backup.
                 </div>
               )}
+            </CardContent>
+          </Card>
+          <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
+            <CardHeader className="p-4 pb-0">
+              <h2 className="text-lg font-semibold text-[var(--app-text)]">Onboarding</h2>
+            </CardHeader>
+            <CardContent className="p-4">
+              <Button
+                variant="secondary"
+                onPress={() => {
+                  setShowOnboarding(true);
+                  navigate("/onboarding");
+                }}
+              >
+                <span className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  <span>Show onboarding</span>
+                </span>
+              </Button>
             </CardContent>
           </Card>
         </div>
