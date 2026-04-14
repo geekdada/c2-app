@@ -30,7 +30,6 @@ test.beforeEach(async ({ page }) => {
         return {
           profiles: [...profiles],
           activeProfileId,
-          importResult: { status: "empty" },
           settingsSnapshot: buildSnapshot(),
         };
       },

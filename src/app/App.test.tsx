@@ -28,7 +28,6 @@ function resetStores() {
     isLoading: true,
     isSaving: false,
     dirtyProfileId: null,
-    importResult: null,
     settingsSnapshot: null,
     error: null,
   });

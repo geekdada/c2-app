@@ -2,7 +2,7 @@
 
 import os from "node:os";
 import path from "node:path";
-import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 
 import { describe, expect, it } from "vitest";
 
@@ -23,7 +23,7 @@ async function createTestPaths() {
 }
 
 describe("bootstrapApp", () => {
-  it("imports the first profile from Claude settings when credentials exist", async () => {
+  it("returns empty profiles for a fresh install with credentials in settings", async () => {
     const { paths } = await createTestPaths();
 
     await writeFile(
@@ -43,21 +43,13 @@ describe("bootstrapApp", () => {
     );
 
     const result = await bootstrapApp(paths);
-    const persisted = JSON.parse(await readFile(paths.profilesFile, "utf8")) as {
-      activeProfileId: string | null;
-      profiles: Array<{ env: Record<string, string> }>;
-    };
 
-    expect(result.importResult.status).toBe("imported");
-    expect(result.profiles).toHaveLength(1);
-    expect(result.profiles[0]?.env).toEqual({
-      ANTHROPIC_API_KEY: "sk-imported-key",
-      ANTHROPIC_BASE_URL: "https://api.example.com",
-    });
-    expect(persisted.activeProfileId).toBe(result.activeProfileId);
+    expect(result.profiles).toHaveLength(0);
+    expect(result.activeProfileId).toBeNull();
+    expect(result.settingsSnapshot.managedEnv.ANTHROPIC_API_KEY).toBe("sk-imported-key");
   });
 
-  it("keeps onboarding empty when no credentials are present", async () => {
+  it("returns empty profiles when no credentials are present", async () => {
     const { paths } = await createTestPaths();
 
     await writeFile(
@@ -76,7 +68,6 @@ describe("bootstrapApp", () => {
 
     const result = await bootstrapApp(paths);
 
-    expect(result.importResult.status).toBe("empty");
     expect(result.profiles).toHaveLength(0);
     expect(result.activeProfileId).toBeNull();
   });

@@ -2,12 +2,7 @@ import { create } from "zustand";
 
 import { getDesktopApi } from "@/app/desktopApi";
 import { useUiStore } from "@/app/store/ui";
-import type {
-  BootstrapResult,
-  ClaudeSettingsSnapshot,
-  ImportResult,
-  SwitchResult,
-} from "@/shared/ipc";
+import type { BootstrapResult, ClaudeSettingsSnapshot, SwitchResult } from "@/shared/ipc";
 import type { Profile, ProfileInput } from "@/shared/profiles";
 
 function toErrorMessage(error: unknown): string {
@@ -20,7 +15,6 @@ type ProfilesState = {
   isLoading: boolean;
   isSaving: boolean;
   dirtyProfileId: string | null;
-  importResult: ImportResult | null;
   settingsSnapshot: ClaudeSettingsSnapshot | null;
   error: string | null;
   bootstrap: () => Promise<BootstrapResult>;
@@ -32,7 +26,6 @@ type ProfilesState = {
   switchProfile: (profileId: string) => Promise<SwitchResult>;
   restoreBackup: (backupId: string) => Promise<void>;
   setDirtyProfileId: (profileId: string | null) => void;
-  clearImportResult: () => void;
 };
 
 export const useProfilesStore = create<ProfilesState>((set) => ({
@@ -41,7 +34,6 @@ export const useProfilesStore = create<ProfilesState>((set) => ({
   isLoading: true,
   isSaving: false,
   dirtyProfileId: null,
-  importResult: null,
   settingsSnapshot: null,
   error: null,
   async bootstrap() {
@@ -58,7 +50,6 @@ export const useProfilesStore = create<ProfilesState>((set) => ({
       set({
         profiles: result.profiles,
         activeProfileId: result.activeProfileId,
-        importResult: result.importResult,
         settingsSnapshot: result.settingsSnapshot,
         isLoading: false,
       });
@@ -243,11 +234,6 @@ export const useProfilesStore = create<ProfilesState>((set) => ({
   setDirtyProfileId(profileId) {
     set({
       dirtyProfileId: profileId,
-    });
-  },
-  clearImportResult() {
-    set({
-      importResult: null,
     });
   },
 }));

@@ -25,26 +25,14 @@ export type ClaudeSettingsSnapshot = {
   exists: boolean;
   managedEnv: ManagedEnv;
   unmanagedKeys: string[];
+  hasModelOverride: boolean;
   backups: BackupEntry[];
   error: string | null;
 };
 
-export type ImportResult =
-  | {
-      status: "existing";
-    }
-  | {
-      status: "imported";
-      profileId: string;
-    }
-  | {
-      status: "empty";
-    };
-
 export type BootstrapResult = {
   profiles: Profile[];
   activeProfileId: string | null;
-  importResult: ImportResult;
   settingsSnapshot: ClaudeSettingsSnapshot;
   preferences: Preferences;
 };
