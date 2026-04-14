@@ -1,4 +1,4 @@
-import { Button, Card, CardContent } from "@heroui/react";
+import { Button, Card, CardContent, toast } from "@heroui/react";
 import { Download, Plus, TriangleAlert } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useProfilesStore } from "@/app/store/profiles";
 import { useUiStore } from "@/app/store/ui";
 import { BrandBadge } from "@/components/layout/BrandBadge";
-import { hasCredential } from "@/shared/schema";
+import { hasCredential, sanitizeManagedEnvForImport } from "@/shared/schema";
 
 export function OnboardingPage() {
   const navigate = useNavigate();
@@ -16,7 +16,6 @@ export function OnboardingPage() {
   const isSaving = useProfilesStore((state) => state.isSaving);
   const setHasCompletedOnboarding = useUiStore((state) => state.setHasCompletedOnboarding);
   const showOnboarding = useUiStore((state) => state.showOnboarding);
-  const pushToast = useUiStore((state) => state.pushToast);
 
   const hasExistingCredentials = hasCredential(settingsSnapshot?.managedEnv ?? {});
 
@@ -104,12 +103,11 @@ export function OnboardingPage() {
                 onPress={() => {
                   void createProfile({
                     name: "Imported profile",
-                    env: settingsSnapshot!.managedEnv,
+                    env: sanitizeManagedEnvForImport(settingsSnapshot!.managedEnv),
                   }).then((profile) => {
-                    pushToast({
-                      tone: "success",
-                      title: `Created ${profile.name}`,
+                    toast.success(`Created ${profile.name}`, {
                       description: "Imported credentials from your existing Claude settings.",
+                      timeout: 3600,
                     });
                     navigate("/");
                   });

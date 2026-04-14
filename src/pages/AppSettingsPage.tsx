@@ -5,6 +5,7 @@ import {
   CardHeader,
   ToggleButton,
   ToggleButtonGroup,
+  toast,
 } from "@heroui/react";
 import type { Key } from "@heroui/react";
 import { BookOpen, Monitor, MoonStar, RotateCcw, SunMedium } from "lucide-react";
@@ -12,8 +13,27 @@ import { useNavigate } from "react-router-dom";
 
 import { useProfilesStore } from "@/app/store/profiles";
 import { useUiStore } from "@/app/store/ui";
-import { managedEnvKeys, managedKeyLabels } from "@/shared/profiles";
+import { managedEnvKeys, managedKeyLabels, type ManagedEnvKey } from "@/shared/profiles";
 import { isSecretKey, maskSecret } from "@/shared/schema";
+
+function formatManagedEnvValue(key: ManagedEnvKey, value: string | undefined): string | null {
+  if (!value) {
+    return null;
+  }
+
+  if (isSecretKey(key)) {
+    return maskSecret(value, key);
+  }
+
+  if (
+    key === "CLAUDE_CODE_DISABLE_1M_CONTEXT" ||
+    key === "CLAUDE_CODE_DISABLE_ATTACHMENTS"
+  ) {
+    return value === "1" ? "Enabled" : value;
+  }
+
+  return value;
+}
 
 export function AppSettingsPage() {
   const navigate = useNavigate();
@@ -23,7 +43,6 @@ export function AppSettingsPage() {
   const theme = useUiStore((state) => state.theme);
   const setTheme = useUiStore((state) => state.setTheme);
   const setShowOnboarding = useUiStore((state) => state.setShowOnboarding);
-  const pushToast = useUiStore((state) => state.pushToast);
 
   return (
     <section className="space-y-4">
@@ -57,12 +76,7 @@ export function AppSettingsPage() {
 
             <div className="grid gap-2 md:grid-cols-2">
               {managedEnvKeys.map((key) => {
-                const value = settingsSnapshot?.managedEnv[key];
-                const displayValue = value
-                  ? isSecretKey(key)
-                    ? maskSecret(value, key)
-                    : value
-                  : null;
+                const displayValue = formatManagedEnvValue(key, settingsSnapshot?.managedEnv[key]);
 
                 return (
                   <div
@@ -173,11 +187,10 @@ export function AppSettingsPage() {
                       variant="secondary"
                       onPress={() => {
                         void restoreBackup(backup.id).then(() => {
-                          pushToast({
-                            tone: "success",
-                            title: "Backup restored",
+                          toast.success("Backup restored", {
                             description:
                               "Claude settings were replaced with the selected snapshot.",
+                            timeout: 3600,
                           });
                         });
                       }}

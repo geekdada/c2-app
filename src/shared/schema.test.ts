@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { diffManagedEnv, normalizeManagedEnv, validateProfileInput } from "./schema";
+import {
+  diffManagedEnv,
+  normalizeManagedEnv,
+  sanitizeManagedEnvForImport,
+  validateProfileInput,
+} from "./schema";
 
 describe("schema helpers", () => {
   it("trims and removes empty managed env values", () => {
@@ -32,15 +37,17 @@ describe("schema helpers", () => {
         CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "  50  ",
         CLAUDE_CODE_AUTO_COMPACT_WINDOW: " 500000 ",
         CLAUDE_CODE_MAX_OUTPUT_TOKENS: "  ",
+        CLAUDE_CODE_DISABLE_1M_CONTEXT: " 1 ",
       }),
     ).toEqual({
       ANTHROPIC_API_KEY: "key-123",
       CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "50",
       CLAUDE_CODE_AUTO_COMPACT_WINDOW: "500000",
+      CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
     });
   });
 
-  it("accepts valid numeric strings for advanced keys", () => {
+  it("accepts valid advanced values including boolean flags", () => {
     expect(() =>
       validateProfileInput({
         name: "With advanced",
@@ -49,6 +56,8 @@ describe("schema helpers", () => {
           CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "50",
           CLAUDE_CODE_AUTO_COMPACT_WINDOW: "500000",
           CLAUDE_CODE_MAX_OUTPUT_TOKENS: "16384",
+          CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
+          CLAUDE_CODE_DISABLE_ATTACHMENTS: "1",
         },
       }),
     ).not.toThrow();
@@ -88,6 +97,45 @@ describe("schema helpers", () => {
         },
       }),
     ).toThrowError(/positive integer/i);
+  });
+
+  it("rejects invalid values for disable flags", () => {
+    expect(() =>
+      validateProfileInput({
+        name: "Bad flag",
+        env: {
+          ANTHROPIC_API_KEY: "sk-test-123",
+          CLAUDE_CODE_DISABLE_1M_CONTEXT: "true",
+        },
+      }),
+    ).toThrowError(/enabled/i);
+
+    expect(() =>
+      validateProfileInput({
+        name: "Bad flag",
+        env: {
+          ANTHROPIC_API_KEY: "sk-test-123",
+          CLAUDE_CODE_DISABLE_ATTACHMENTS: "0",
+        },
+      }),
+    ).toThrowError(/enabled/i);
+  });
+
+  it("drops invalid imported advanced values and keeps valid boolean flags", () => {
+    expect(
+      sanitizeManagedEnvForImport({
+        ANTHROPIC_API_KEY: " sk-test-123 ",
+        CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "200",
+        CLAUDE_CODE_AUTO_COMPACT_WINDOW: "not-a-number",
+        CLAUDE_CODE_MAX_OUTPUT_TOKENS: "1024",
+        CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
+        CLAUDE_CODE_DISABLE_ATTACHMENTS: "true",
+      }),
+    ).toEqual({
+      ANTHROPIC_API_KEY: "sk-test-123",
+      CLAUDE_CODE_MAX_OUTPUT_TOKENS: "1024",
+      CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
+    });
   });
 
   it("detects added, updated, and removed managed env keys", () => {

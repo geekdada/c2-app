@@ -33,6 +33,8 @@ describe("bootstrapApp", () => {
           env: {
             ANTHROPIC_API_KEY: " sk-imported-key ",
             ANTHROPIC_BASE_URL: "https://api.example.com",
+            CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
+            CLAUDE_CODE_DISABLE_ATTACHMENTS: "1",
             CUSTOM_FLAG: "leave-me-alone",
           },
         },
@@ -46,7 +48,12 @@ describe("bootstrapApp", () => {
 
     expect(result.profiles).toHaveLength(0);
     expect(result.activeProfileId).toBeNull();
-    expect(result.settingsSnapshot.managedEnv.ANTHROPIC_API_KEY).toBe("sk-imported-key");
+    expect(result.settingsSnapshot.managedEnv).toEqual({
+      ANTHROPIC_API_KEY: "sk-imported-key",
+      ANTHROPIC_BASE_URL: "https://api.example.com",
+      CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
+      CLAUDE_CODE_DISABLE_ATTACHMENTS: "1",
+    });
   });
 
   it("returns empty profiles when no credentials are present", async () => {

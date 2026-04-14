@@ -8,6 +8,8 @@ export const managedEnvKeys = [
   "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE",
   "CLAUDE_CODE_AUTO_COMPACT_WINDOW",
   "CLAUDE_CODE_MAX_OUTPUT_TOKENS",
+  "CLAUDE_CODE_DISABLE_1M_CONTEXT",
+  "CLAUDE_CODE_DISABLE_ATTACHMENTS",
 ] as const;
 
 export const managedSecretKeys = ["ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN"] as const;
@@ -40,6 +42,8 @@ export const advancedEnvKeys: readonly ManagedEnvKey[] = [
   "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE",
   "CLAUDE_CODE_AUTO_COMPACT_WINDOW",
   "CLAUDE_CODE_MAX_OUTPUT_TOKENS",
+  "CLAUDE_CODE_DISABLE_1M_CONTEXT",
+  "CLAUDE_CODE_DISABLE_ATTACHMENTS",
 ];
 
 export const managedKeyLabels: Record<ManagedEnvKey, string> = {
@@ -52,6 +56,8 @@ export const managedKeyLabels: Record<ManagedEnvKey, string> = {
   CLAUDE_AUTOCOMPACT_PCT_OVERRIDE: "Auto-compact threshold",
   CLAUDE_CODE_AUTO_COMPACT_WINDOW: "Auto-compact window",
   CLAUDE_CODE_MAX_OUTPUT_TOKENS: "Max output tokens",
+  CLAUDE_CODE_DISABLE_1M_CONTEXT: "Disable 1M context",
+  CLAUDE_CODE_DISABLE_ATTACHMENTS: "Disable attachments",
 };
 
 export const managedKeyDescriptions: Partial<Record<ManagedEnvKey, string>> = {
@@ -61,4 +67,8 @@ export const managedKeyDescriptions: Partial<Record<ManagedEnvKey, string>> = {
     "Set the context capacity in tokens used for auto-compaction calculations. Defaults to the model's context window: 200K for standard models or 1M for extended context models. Use a lower value like 500000 on a 1M model to treat the window as 500K for compaction purposes. The value is capped at the model's actual context window. `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is applied as a percentage of this value. Setting this variable decouples the compaction threshold from the status line's used_percentage, which always uses the model's full context window.",
   CLAUDE_CODE_MAX_OUTPUT_TOKENS:
     "Set the maximum number of output tokens for most requests. Defaults and caps vary by model. Increasing this value reduces the effective context window available before auto-compaction triggers.",
+  CLAUDE_CODE_DISABLE_1M_CONTEXT:
+    "Set to `1` to disable 1M context window support. Leave unset to keep 1M context enabled when Claude Code supports it.",
+  CLAUDE_CODE_DISABLE_ATTACHMENTS:
+    "Set to `1` to disable attachment processing so `@` file mentions are sent as plain text. Leave unset to keep attachment processing enabled.",
 };

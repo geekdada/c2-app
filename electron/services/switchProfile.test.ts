@@ -28,6 +28,7 @@ describe("switchProfileInClaudeSettings", () => {
       name: "Token profile",
       env: {
         ANTHROPIC_AUTH_TOKEN: "auth-next",
+        CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
       },
       createdAt: "2026-04-13T00:00:00.000Z",
       updatedAt: "2026-04-13T00:00:00.000Z",
@@ -58,6 +59,7 @@ describe("switchProfileInClaudeSettings", () => {
           env: {
             ANTHROPIC_API_KEY: "key-current",
             ANTHROPIC_BASE_URL: "https://old.example.com",
+            CLAUDE_CODE_DISABLE_ATTACHMENTS: "1",
             CUSTOM_FLAG: "keep-me",
           },
           permissions: {
@@ -80,6 +82,7 @@ describe("switchProfileInClaudeSettings", () => {
       env: {
         CUSTOM_FLAG: "keep-me",
         ANTHROPIC_AUTH_TOKEN: "auth-next",
+        CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
       },
       permissions: {
         allow: ["Read", "Write"],
@@ -89,6 +92,7 @@ describe("switchProfileInClaudeSettings", () => {
     expect(result.snapshot.backups).toHaveLength(1);
     expect(result.snapshot.managedEnv).toEqual({
       ANTHROPIC_AUTH_TOKEN: "auth-next",
+      CLAUDE_CODE_DISABLE_1M_CONTEXT: "1",
     });
   });
 });

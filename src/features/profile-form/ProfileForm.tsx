@@ -75,6 +75,10 @@ function getFieldType(key: ManagedEnvKey, showSecrets: boolean): string {
   return "text";
 }
 
+function isBooleanAdvancedKey(key: ManagedEnvKey): boolean {
+  return key === "CLAUDE_CODE_DISABLE_1M_CONTEXT" || key === "CLAUDE_CODE_DISABLE_ATTACHMENTS";
+}
+
 function renderDescription(text: string) {
   const parts = text.split(/(`[^`]+`)/);
 
@@ -333,6 +337,10 @@ export function ProfileForm({
 
                                 if (!trimmed) return undefined;
 
+                                if (isBooleanAdvancedKey(key)) {
+                                  return trimmed === "1" ? undefined : 'Must be "1" when enabled.';
+                                }
+
                                 if (key === "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE") {
                                   if (!isValidIntegerInRange(trimmed, 1, 100)) {
                                     return "Must be an integer between 1 and 100.";
@@ -344,29 +352,57 @@ export function ProfileForm({
                                 return undefined;
                               },
                             }}
-                            children={(field) => (
-                              <TextField
-                                isInvalid={field.state.meta.errors.length > 0}
-                                value={field.state.value}
-                                onBlur={() => field.handleBlur()}
-                                onChange={(val) => field.handleChange(val)}
-                              >
-                                <Label className="text-sm font-medium text-[var(--app-text)]">
-                                  <code className="rounded border border-[var(--app-border)] bg-[var(--app-surface-muted)] px-1.5 py-0.5 font-mono text-xs">
-                                    {key}
-                                  </code>
-                                </Label>
-                                {managedKeyDescriptions[key] ? (
-                                  <p className="mt-1 text-xs leading-5 text-[var(--app-text-subtle)]">
-                                    {renderDescription(managedKeyDescriptions[key])}
-                                  </p>
-                                ) : null}
-                                <Input className={inputClassName} inputMode="numeric" type="text" />
-                                <FieldError className="mt-2 text-sm text-rose-300">
-                                  {field.state.meta.errors[0]}
-                                </FieldError>
-                              </TextField>
-                            )}
+                            children={(field) => {
+                              const isBoolean = isBooleanAdvancedKey(key);
+                              const checked = field.state.value.trim() === "1";
+
+                              return (
+                                <TextField
+                                  isInvalid={field.state.meta.errors.length > 0}
+                                  value={field.state.value}
+                                  onBlur={() => field.handleBlur()}
+                                  onChange={(val) => field.handleChange(val)}
+                                >
+                                  <Label className="text-sm font-medium text-[var(--app-text)]">
+                                    <code className="rounded border border-[var(--app-border)] bg-[var(--app-surface-muted)] px-1.5 py-0.5 font-mono text-xs">
+                                      {key}
+                                    </code>
+                                  </Label>
+                                  {managedKeyDescriptions[key] ? (
+                                    <p className="mt-1 text-xs leading-5 text-[var(--app-text-subtle)]">
+                                      {renderDescription(managedKeyDescriptions[key])}
+                                    </p>
+                                  ) : null}
+                                  {isBoolean ? (
+                                    <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] px-3 py-3 text-sm text-[var(--app-text)]">
+                                      <input
+                                        aria-label={managedKeyLabels[key]}
+                                        checked={checked}
+                                        className="mt-0.5 h-4 w-4 rounded border-[var(--app-border)] bg-transparent"
+                                        type="checkbox"
+                                        onBlur={() => field.handleBlur()}
+                                        onChange={(event) => {
+                                          field.handleChange(event.target.checked ? "1" : "");
+                                        }}
+                                      />
+                                      <span className="space-y-1 leading-5">
+                                        <span className="block font-medium text-[var(--app-text)]">
+                                          {managedKeyLabels[key]}
+                                        </span>
+                                        <span className="block text-xs text-[var(--app-text-subtle)]">
+                                          {checked ? "Enabled" : "Disabled"}
+                                        </span>
+                                      </span>
+                                    </label>
+                                  ) : (
+                                    <Input className={inputClassName} inputMode="numeric" type="text" />
+                                  )}
+                                  <FieldError className="mt-2 text-sm text-rose-300">
+                                    {field.state.meta.errors[0]}
+                                  </FieldError>
+                                </TextField>
+                              );
+                            }}
                           />
                         ))}
                       </div>

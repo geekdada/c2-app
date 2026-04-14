@@ -40,7 +40,6 @@ function resetStores() {
       switchProfileId: null,
       deleteProfileId: null,
     },
-    toasts: [],
   });
 }
 
@@ -141,5 +140,40 @@ describe("App", () => {
     });
 
     expect(confirmSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("creates, activates, and displays advanced disable flags", async () => {
+    const user = userEvent.setup();
+
+    window.__PROFILE_MANAGER_MOCK_API__ = createMockDesktopApi({
+      profiles: [profile],
+      activeProfileId: profile.id,
+    });
+
+    renderApp();
+
+    await screen.findByRole("button", { name: "New profile" });
+    await user.click(screen.getByRole("button", { name: "New profile" }));
+
+    await screen.findByRole("heading", { name: "Create a profile" });
+
+    await user.type(screen.getByLabelText("Profile name"), "Advanced Flags");
+    await user.type(screen.getByLabelText("API key"), "sk-test-123");
+    await user.click(screen.getByRole("button", { name: "Advanced settings" }));
+    await user.click(screen.getByLabelText("Disable 1M context"));
+    await user.click(screen.getByLabelText("Disable attachments"));
+    await user.click(screen.getByRole("button", { name: "Create profile" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Advanced Flags")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Activate" }));
+    await screen.findByRole("button", { name: "Switch profile" });
+    await user.click(screen.getByRole("button", { name: "Switch profile" }));
+    await user.click(screen.getByRole("button", { name: "Settings" }));
+
+    await screen.findByRole("heading", { name: "Settings" });
+    expect(screen.getAllByText("Enabled")).toHaveLength(2);
   });
 });

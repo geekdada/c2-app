@@ -76,6 +76,28 @@ export const managedEnvSchema = managedEnvBaseSchema.superRefine((env, ctx) => {
       message: "Must be a positive integer.",
     });
   }
+
+  if (
+    env.CLAUDE_CODE_DISABLE_1M_CONTEXT?.trim() &&
+    env.CLAUDE_CODE_DISABLE_1M_CONTEXT.trim() !== "1"
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["CLAUDE_CODE_DISABLE_1M_CONTEXT"],
+      message: 'Must be "1" when enabled.',
+    });
+  }
+
+  if (
+    env.CLAUDE_CODE_DISABLE_ATTACHMENTS?.trim() &&
+    env.CLAUDE_CODE_DISABLE_ATTACHMENTS.trim() !== "1"
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["CLAUDE_CODE_DISABLE_ATTACHMENTS"],
+      message: 'Must be "1" when enabled.',
+    });
+  }
 });
 
 export const profileInputSchema = z.object({
@@ -172,6 +194,20 @@ export function sanitizeManagedEnvForImport(
     !isValidIntegerInRange(normalized.CLAUDE_CODE_MAX_OUTPUT_TOKENS, 1)
   ) {
     delete normalized.CLAUDE_CODE_MAX_OUTPUT_TOKENS;
+  }
+
+  if (
+    normalized.CLAUDE_CODE_DISABLE_1M_CONTEXT &&
+    normalized.CLAUDE_CODE_DISABLE_1M_CONTEXT !== "1"
+  ) {
+    delete normalized.CLAUDE_CODE_DISABLE_1M_CONTEXT;
+  }
+
+  if (
+    normalized.CLAUDE_CODE_DISABLE_ATTACHMENTS &&
+    normalized.CLAUDE_CODE_DISABLE_ATTACHMENTS !== "1"
+  ) {
+    delete normalized.CLAUDE_CODE_DISABLE_ATTACHMENTS;
   }
 
   return normalized;
