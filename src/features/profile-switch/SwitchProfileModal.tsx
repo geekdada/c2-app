@@ -1,4 +1,5 @@
 import { Chip } from "@heroui/react";
+import { Info } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { ConfirmationModal } from "@/components/layout/ConfirmationModal";
@@ -9,6 +10,7 @@ type SwitchProfileModalProps = {
   isOpen: boolean;
   profile: Profile | null;
   currentManagedEnv: ManagedEnv;
+  hasModelOverride?: boolean;
   isBusy?: boolean;
   onClose: () => void;
   onConfirm: () => void | Promise<void>;
@@ -46,6 +48,7 @@ export function SwitchProfileModal({
   isOpen,
   profile,
   currentManagedEnv,
+  hasModelOverride = false,
   isBusy = false,
   onClose,
   onConfirm,
@@ -68,6 +71,18 @@ export function SwitchProfileModal({
             {renderKeyList("Will update", diff.updated, "warning")}
             {renderKeyList("Will remove", diff.removed, "danger")}
           </div>
+          {hasModelOverride ? (
+            <div className="flex items-start gap-2.5 rounded-lg border border-sky-400/25 bg-sky-400/10 px-3 py-2.5 text-sm leading-relaxed text-sky-200/90">
+              <Info className="mt-0.5 h-4 w-4 shrink-0 text-sky-300" />
+              <span>
+                The{" "}
+                <code className="rounded border border-sky-400/20 bg-sky-400/10 px-1 py-0.5 font-mono text-xs">
+                  model
+                </code>{" "}
+                override in your settings will be reset.
+              </span>
+            </div>
+          ) : null}
         </div>
       }
       isBusy={isBusy}

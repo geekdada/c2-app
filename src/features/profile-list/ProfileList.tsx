@@ -3,6 +3,8 @@ import { ArrowRightLeft, Pencil, Trash2 } from "lucide-react";
 
 import { sortProfiles } from "@/app/store/profiles";
 import { advancedEnvKeys, managedEnvKeys, managedKeyLabels, type Profile } from "@/shared/profiles";
+
+const basicEnvKeys = managedEnvKeys.filter((key) => !advancedEnvKeys.includes(key));
 import { isSecretKey, maskSecret } from "@/shared/schema";
 
 type ProfileListProps = {
@@ -75,12 +77,8 @@ export function ProfileList({
             </CardHeader>
 
             <CardContent className="grid gap-2 px-4 pb-3 pt-0 sm:grid-cols-2">
-              {managedEnvKeys.map((key) => {
+              {basicEnvKeys.map((key) => {
                 const value = formatManagedValue(profile, key);
-
-                if (!value && advancedEnvKeys.includes(key)) {
-                  return null;
-                }
 
                 return (
                   <div

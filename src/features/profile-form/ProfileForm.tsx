@@ -352,7 +352,9 @@ export function ProfileForm({
                                 onChange={(val) => field.handleChange(val)}
                               >
                                 <Label className="text-sm font-medium text-[var(--app-text)]">
-                                  {managedKeyLabels[key]}
+                                  <code className="rounded border border-[var(--app-border)] bg-[var(--app-surface-muted)] px-1.5 py-0.5 font-mono text-xs">
+                                    {key}
+                                  </code>
                                 </Label>
                                 {managedKeyDescriptions[key] ? (
                                   <p className="mt-1 text-xs leading-5 text-[var(--app-text-subtle)]">
