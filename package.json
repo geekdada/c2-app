@@ -9,10 +9,11 @@
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint .",
-    "format": "oxfmt electron src e2e index.html package.json playwright.config.ts tsconfig.json vite.config.ts vitest.setup.ts",
+    "format": "oxfmt .",
     "format:check": "pnpm format --check",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "prepare": "husky"
   },
   "dependencies": {
     "@fontsource-variable/geist-mono": "^5.2.7",
@@ -38,7 +39,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "electron": "^41.2.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.0.2",
+    "lint-staged": "^16.4.0",
     "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",
     "tailwindcss": "^4.2.2",
@@ -47,10 +50,13 @@
     "vite-plugin-electron": "^0.29.1",
     "vitest": "^4.1.4"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,html,css}": "oxfmt"
+  },
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
   "pnpm": {
     "onlyBuiltDependencies": [
       "electron"
     ]
-  },
-  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+  }
 }
