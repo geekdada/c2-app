@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { app, BrowserWindow, shell } from "electron";
+import { app, BrowserWindow, nativeImage, shell } from "electron";
 
 import { registerPreferencesIpcHandlers } from "./ipc/preferences";
 import { registerProfileIpcHandlers } from "./ipc/profiles";
@@ -14,6 +14,7 @@ const rendererDist = path.join(appRoot, "dist");
 const indexHtml = path.join(rendererDist, "index.html");
 const preload = path.join(appRoot, "dist-electron/preload/index.cjs");
 const viteDevServerUrl = process.env.VITE_DEV_SERVER_URL;
+const iconPath = path.join(appRoot, "build/icons/icon.icns");
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -26,6 +27,7 @@ async function createMainWindow(): Promise<void> {
     backgroundColor: "#09090b",
     title: "C2",
     titleBarStyle: "hiddenInset",
+    icon: nativeImage.createFromPath(iconPath),
     webPreferences: {
       preload,
       contextIsolation: true,
@@ -52,6 +54,10 @@ async function createMainWindow(): Promise<void> {
 
 app.whenReady().then(async () => {
   const paths = createAppPaths(app.getPath("home"));
+
+  if (process.platform === "darwin") {
+    app.dock?.setIcon(nativeImage.createFromPath(iconPath));
+  }
 
   registerPreferencesIpcHandlers(paths);
   registerProfileIpcHandlers(paths);
