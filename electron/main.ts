@@ -8,13 +8,14 @@ import { registerProfileIpcHandlers } from "./ipc/profiles";
 import { registerSettingsIpcHandlers } from "./ipc/settings";
 import { createAppPaths } from "./services/paths";
 
+declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
+declare const MAIN_WINDOW_VITE_NAME: string;
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const appRoot = path.join(__dirname, "../..");
-const rendererDist = path.join(appRoot, "dist");
-const indexHtml = path.join(rendererDist, "index.html");
-const preload = path.join(appRoot, "dist-electron/preload/index.cjs");
-const viteDevServerUrl = process.env.VITE_DEV_SERVER_URL;
-const iconPath = path.join(appRoot, "build/icons/icon.icns");
+const preload = path.join(__dirname, "preload.cjs");
+const iconPath = app.isPackaged
+  ? path.join(process.resourcesPath, "icon.icns")
+  : path.join(__dirname, "../../build/icons/icon.icns");
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -36,11 +37,13 @@ async function createMainWindow(): Promise<void> {
     },
   });
 
-  if (viteDevServerUrl) {
-    await mainWindow.loadURL(viteDevServerUrl);
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    await mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
     mainWindow.webContents.openDevTools({ mode: "detach" });
   } else {
-    await mainWindow.loadFile(indexHtml);
+    await mainWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+    );
   }
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {

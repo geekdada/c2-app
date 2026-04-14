@@ -82,6 +82,8 @@ out
 .nuxt
 dist
 dist-electron
+.vite
+out
 playwright-report
 test-results
 blob-report
