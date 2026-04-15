@@ -4,6 +4,7 @@ import { VitePlugin } from "@electron-forge/plugin-vite";
 const config: ForgeConfig = {
   packagerConfig: {
     name: "C2",
+    executableName: "c2-app",
     icon: "./build/icons/icon",
     appBundleId: "dev.royli.c2",
     appCategoryType: "public.app-category.developer-tools",
