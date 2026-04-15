@@ -158,5 +158,10 @@ export function createMockDesktopApi(options: MockOptions = {}): DesktopApi {
     async savePreferences(prefs: Preferences) {
       preferences = prefs;
     },
+    async checkForUpdate() {},
+    async openReleasePage() {},
+    onUpdateStatus() {
+      return () => {};
+    },
   };
 }

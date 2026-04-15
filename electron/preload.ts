@@ -5,6 +5,7 @@ import {
   type DesktopApi,
   type Preferences,
   type ProfileInput,
+  type UpdateStatus,
 } from "../src/shared/ipc";
 
 const api: DesktopApi = {
@@ -20,6 +21,15 @@ const api: DesktopApi = {
   restoreBackup: (backupId: string) => ipcRenderer.invoke(ipcChannels.restoreBackup, backupId),
   getPreferences: () => ipcRenderer.invoke(ipcChannels.getPreferences),
   savePreferences: (prefs: Preferences) => ipcRenderer.invoke(ipcChannels.savePreferences, prefs),
+  checkForUpdate: () => ipcRenderer.invoke(ipcChannels.checkForUpdate),
+  openReleasePage: () => ipcRenderer.invoke(ipcChannels.openReleasePage),
+  onUpdateStatus: (callback: (status: UpdateStatus) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, status: UpdateStatus) => callback(status);
+    ipcRenderer.on(ipcChannels.onUpdateStatus, handler);
+    return () => {
+      ipcRenderer.removeListener(ipcChannels.onUpdateStatus, handler);
+    };
+  },
 };
 
 contextBridge.exposeInMainWorld("api", api);

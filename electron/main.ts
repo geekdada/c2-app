@@ -2,10 +2,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { app, BrowserWindow, nativeImage, shell } from "electron";
+import started from "electron-squirrel-startup";
+
+if (started) app.quit();
 
 import { registerPreferencesIpcHandlers } from "./ipc/preferences";
 import { registerProfileIpcHandlers } from "./ipc/profiles";
 import { registerSettingsIpcHandlers } from "./ipc/settings";
+import { registerUpdaterIpcHandlers } from "./ipc/updater";
 import { createAppPaths } from "./services/paths";
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
@@ -72,6 +76,10 @@ app.whenReady().then(async () => {
   registerProfileIpcHandlers(paths);
   registerSettingsIpcHandlers(paths);
   await createMainWindow();
+
+  if (mainWindow) {
+    registerUpdaterIpcHandlers(mainWindow);
+  }
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

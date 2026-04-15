@@ -13,7 +13,17 @@ export const ipcChannels = {
   restoreBackup: "settings:restoreBackup",
   getPreferences: "preferences:get",
   savePreferences: "preferences:save",
+  checkForUpdate: "updater:checkForUpdate",
+  openReleasePage: "updater:openReleasePage",
+  onUpdateStatus: "updater:status",
 } as const;
+
+export type UpdateStatus =
+  | { state: "idle" }
+  | { state: "checking" }
+  | { state: "available"; version: string; url: string }
+  | { state: "not-available" }
+  | { state: "error"; message: string };
 
 export type BackupEntry = {
   id: string;
@@ -55,6 +65,9 @@ export interface DesktopApi {
   restoreBackup(backupId: string): Promise<void>;
   getPreferences(): Promise<Preferences>;
   savePreferences(prefs: Preferences): Promise<void>;
+  checkForUpdate(): Promise<void>;
+  openReleasePage(): Promise<void>;
+  onUpdateStatus(callback: (status: UpdateStatus) => void): () => void;
 }
 
 export type { Preferences, ProfileInput };
