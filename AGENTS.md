@@ -46,6 +46,7 @@ IPC handlers are registered in `electron/ipc/profiles.ts` and `electron/ipc/sett
 ### Renderer State
 
 Two Zustand stores (no providers needed):
+
 - **`profiles`** store — Profiles, active profile, bootstrap, CRUD, switch, backup restore. This is the primary data store.
 - **`ui`** store — Theme, sidebar key, modal state, toast queue.
 

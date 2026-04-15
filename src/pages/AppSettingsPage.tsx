@@ -25,10 +25,7 @@ function formatManagedEnvValue(key: ManagedEnvKey, value: string | undefined): s
     return maskSecret(value, key);
   }
 
-  if (
-    key === "CLAUDE_CODE_DISABLE_1M_CONTEXT" ||
-    key === "CLAUDE_CODE_DISABLE_ATTACHMENTS"
-  ) {
+  if (key === "CLAUDE_CODE_DISABLE_1M_CONTEXT" || key === "CLAUDE_CODE_DISABLE_ATTACHMENTS") {
     return value === "1" ? "Enabled" : value;
   }
 

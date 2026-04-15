@@ -395,7 +395,11 @@ export function ProfileForm({
                                       </span>
                                     </label>
                                   ) : (
-                                    <Input className={inputClassName} inputMode="numeric" type="text" />
+                                    <Input
+                                      className={inputClassName}
+                                      inputMode="numeric"
+                                      type="text"
+                                    />
                                   )}
                                   <FieldError className="mt-2 text-sm text-rose-300">
                                     {field.state.meta.errors[0]}
