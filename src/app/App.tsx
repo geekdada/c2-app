@@ -5,6 +5,7 @@ import { BrandBadge } from "@/components/layout/BrandBadge";
 
 import { AppRouter } from "./router";
 import { useProfilesStore } from "./store/profiles";
+import { useUpdaterStore } from "./store/updater";
 
 function LoadingScreen() {
   return (
@@ -65,10 +66,15 @@ export default function App() {
   const error = useProfilesStore((state) => state.error);
   const profiles = useProfilesStore((state) => state.profiles);
   const settingsSnapshot = useProfilesStore((state) => state.settingsSnapshot);
+  const subscribeToUpdates = useUpdaterStore((state) => state.subscribe);
 
   useEffect(() => {
     void bootstrap();
   }, [bootstrap]);
+
+  useEffect(() => {
+    return subscribeToUpdates();
+  }, [subscribeToUpdates]);
 
   return (
     <div className="flex h-screen flex-col bg-[var(--app-bg)] text-[var(--app-text)]">

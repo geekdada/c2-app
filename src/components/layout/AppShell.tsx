@@ -1,10 +1,11 @@
 import { Button, Card, CardContent } from "@heroui/react";
-import { Home, Plus, Settings } from "lucide-react";
+import { ArrowDownToLine, Home, Plus, Settings } from "lucide-react";
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { useProfilesStore } from "@/app/store/profiles";
 import { useUiStore } from "@/app/store/ui";
+import { useUpdaterStore } from "@/app/store/updater";
 import { BrandBadge } from "@/components/layout/BrandBadge";
 
 const navItems = [
@@ -31,6 +32,8 @@ export function AppShell() {
   const setDirtyProfileId = useProfilesStore((state) => state.setDirtyProfileId);
   const currentSidebarKey = useUiStore((state) => state.currentSidebarKey);
   const setCurrentSidebarKey = useUiStore((state) => state.setCurrentSidebarKey);
+  const updateStatus = useUpdaterStore((state) => state.status);
+  const openReleasePage = useUpdaterStore((state) => state.openReleasePage);
 
   useEffect(() => {
     setCurrentSidebarKey(location.pathname.startsWith("/settings") ? "settings" : "profiles");
@@ -94,9 +97,21 @@ export function AppShell() {
                 );
               })}
             </nav>
-            <p className="mt-auto text-xs text-[var(--app-text-subtle)]">
-              {profiles.length} profile{profiles.length === 1 ? "" : "s"}
-            </p>
+            <div className="mt-auto space-y-2">
+              {updateStatus.state === "available" && (
+                <button
+                  className="flex w-full items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-2 text-left text-sm text-emerald-400 transition hover:bg-emerald-500/20"
+                  type="button"
+                  onClick={openReleasePage}
+                >
+                  <ArrowDownToLine className="h-4 w-4 shrink-0" />
+                  <span>v{updateStatus.version} available</span>
+                </button>
+              )}
+              <p className="text-xs text-[var(--app-text-subtle)]">
+                {profiles.length} profile{profiles.length === 1 ? "" : "s"}
+              </p>
+            </div>
           </CardContent>
         </Card>
 

@@ -8,11 +8,22 @@ import {
   toast,
 } from "@heroui/react";
 import type { Key } from "@heroui/react";
-import { BookOpen, Monitor, MoonStar, RotateCcw, SunMedium } from "lucide-react";
+import {
+  BookOpen,
+  CheckCircle,
+  Download,
+  Loader2,
+  Monitor,
+  MoonStar,
+  RefreshCw,
+  RotateCcw,
+  SunMedium,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { useProfilesStore } from "@/app/store/profiles";
 import { useUiStore } from "@/app/store/ui";
+import { useUpdaterStore } from "@/app/store/updater";
 import { managedEnvKeys, managedKeyLabels, type ManagedEnvKey } from "@/shared/profiles";
 import { isSecretKey, maskSecret } from "@/shared/schema";
 
@@ -40,6 +51,9 @@ export function AppSettingsPage() {
   const theme = useUiStore((state) => state.theme);
   const setTheme = useUiStore((state) => state.setTheme);
   const setShowOnboarding = useUiStore((state) => state.setShowOnboarding);
+  const updateStatus = useUpdaterStore((state) => state.status);
+  const checkForUpdate = useUpdaterStore((state) => state.checkForUpdate);
+  const openReleasePage = useUpdaterStore((state) => state.openReleasePage);
 
   return (
     <section className="space-y-4">
@@ -204,6 +218,65 @@ export function AppSettingsPage() {
                   No backups yet. Activate a profile to create the first backup.
                 </div>
               )}
+            </CardContent>
+          </Card>
+          <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
+            <CardHeader className="p-4 pb-0">
+              <h2 className="text-lg font-semibold text-[var(--app-text)]">Updates</h2>
+            </CardHeader>
+            <CardContent className="space-y-3 p-4">
+              <div className="rounded-lg border border-[var(--app-border)] bg-[var(--app-surface-muted)] p-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--app-text-subtle)]">
+                  Version
+                </p>
+                <p className="mt-1.5 font-mono text-sm text-[var(--app-text)]">
+                  v{__APP_VERSION__}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-[var(--app-text-muted)]">
+                {updateStatus.state === "checking" && (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Checking for updates...</span>
+                  </>
+                )}
+                {updateStatus.state === "available" && (
+                  <>
+                    <Download className="h-4 w-4 text-emerald-400" />
+                    <span className="text-emerald-400">v{updateStatus.version} available</span>
+                  </>
+                )}
+                {updateStatus.state === "not-available" && (
+                  <>
+                    <CheckCircle className="h-4 w-4" />
+                    <span>You're on the latest version</span>
+                  </>
+                )}
+                {updateStatus.state === "error" && (
+                  <span className="text-rose-400">{updateStatus.message}</span>
+                )}
+              </div>
+              <div className="flex gap-2">
+                {updateStatus.state === "available" ? (
+                  <Button variant="primary" onPress={openReleasePage}>
+                    <span className="flex items-center gap-2">
+                      <Download className="h-4 w-4" />
+                      <span>Download update</span>
+                    </span>
+                  </Button>
+                ) : (
+                  <Button
+                    isDisabled={updateStatus.state === "checking"}
+                    variant="secondary"
+                    onPress={checkForUpdate}
+                  >
+                    <span className="flex items-center gap-2">
+                      <RefreshCw className="h-4 w-4" />
+                      <span>Check for updates</span>
+                    </span>
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
           <Card className="border border-[var(--app-border)] bg-[var(--app-surface)] shadow-none">
