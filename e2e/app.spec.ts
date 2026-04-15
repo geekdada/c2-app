@@ -52,6 +52,11 @@ test.beforeEach(async ({ page }) => {
         return { theme: "dark" };
       },
       async savePreferences() {},
+      async checkForUpdate() {},
+      async openReleasePage() {},
+      onUpdateStatus() {
+        return () => {};
+      },
     };
   });
 });

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -5,11 +6,16 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 
+const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   root: "./",
   plugins: [react(), tailwindcss()],
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   build: {
     outDir: ".vite/renderer/main_window",
     emptyOutDir: true,
