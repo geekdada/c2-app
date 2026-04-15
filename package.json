@@ -25,6 +25,8 @@
     "format:check": "pnpm format --check",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "version": "pnpm changelog && git add .",
     "release": "bumpp",
     "prepare": "husky"
   },
@@ -59,6 +61,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "bumpp": "^11.0.1",
+    "conventional-changelog-cli": "^5.0.0",
     "electron": "^41.2.0",
     "husky": "^9.1.7",
     "jsdom": "^29.0.2",
