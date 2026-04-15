@@ -1,4 +1,18 @@
 {
   "oxc.enable.oxfmt": true,
-  "oxc.enable.oxlint": true
+  "oxc.enable.oxlint": true,
+  "prettier.enable": false,
+  "eslint.enable": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
 }
