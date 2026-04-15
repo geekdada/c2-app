@@ -87,6 +87,17 @@ export function createMockDesktopApi(options: MockOptions = {}): DesktopApi {
       profiles = profiles.map((profile) => (profile.id === profileId ? updatedProfile : profile));
 
       if (activeProfileId === profileId) {
+        if (Object.keys(managedEnv).length > 0) {
+          backups = [
+            {
+              id: crypto.randomUUID(),
+              createdAt: new Date().toISOString(),
+              managedEnv: structuredClone(managedEnv),
+            },
+            ...backups,
+          ];
+        }
+
         managedEnv = normalizeManagedEnv(updatedProfile.env);
       }
 

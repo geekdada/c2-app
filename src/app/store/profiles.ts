@@ -28,7 +28,7 @@ type ProfilesState = {
   setDirtyProfileId: (profileId: string | null) => void;
 };
 
-export const useProfilesStore = create<ProfilesState>((set) => ({
+export const useProfilesStore = create<ProfilesState>((set, get) => ({
   profiles: [],
   activeProfileId: null,
   isLoading: true,
@@ -120,13 +120,17 @@ export const useProfilesStore = create<ProfilesState>((set) => ({
     });
 
     try {
-      const profile = await getDesktopApi().updateProfile(profileId, input);
+      const api = getDesktopApi();
+      const profile = await api.updateProfile(profileId, input);
+      const settingsSnapshot =
+        get().activeProfileId === profileId ? await api.readClaudeSettingsSnapshot() : null;
 
       set((state) => ({
         isSaving: false,
         profiles: state.profiles.map((candidate) =>
           candidate.id === profileId ? profile : candidate,
         ),
+        settingsSnapshot: settingsSnapshot ?? state.settingsSnapshot,
       }));
 
       return profile;

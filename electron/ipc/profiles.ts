@@ -30,8 +30,15 @@ export function registerProfileIpcHandlers(paths: AppPaths): void {
   );
   ipcMain.handle(
     ipcChannels.updateProfile,
-    async (_event, profileId: string, input: ProfileInput) =>
-      updateProfile(paths, profileId, input),
+    async (_event, profileId: string, input: ProfileInput) => {
+      const profile = await updateProfile(paths, profileId, input);
+
+      if ((await getActiveProfileId(paths)) === profileId) {
+        await switchProfileInClaudeSettings(paths, profile);
+      }
+
+      return profile;
+    },
   );
   ipcMain.handle(ipcChannels.deleteProfile, async (_event, profileId: string) =>
     deleteProfile(paths, profileId),

@@ -176,4 +176,34 @@ describe("App", () => {
     await screen.findByRole("heading", { name: "Settings" });
     expect(screen.getAllByText("Enabled")).toHaveLength(2);
   });
+
+  it("refreshes Claude settings after saving the active profile", async () => {
+    const user = userEvent.setup();
+
+    window.__PROFILE_MANAGER_MOCK_API__ = createMockDesktopApi({
+      profiles: [profile],
+      activeProfileId: profile.id,
+      managedEnv: profile.env,
+    });
+
+    renderApp("#/profiles/profile-1");
+
+    await screen.findByRole("heading", { name: "Edit Test Profile" });
+
+    await user.type(screen.getByLabelText("Base URL"), "https://api.example.com");
+    await user.click(screen.getByRole("button", { name: "Advanced settings" }));
+    await user.click(screen.getByLabelText("Disable attachments"));
+    await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Edit" })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Settings" }));
+
+    await screen.findByRole("heading", { name: "Settings" });
+    expect(screen.getByText("https://api.example.com")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Restore" })).toBeInTheDocument();
+    expect(screen.getAllByText("Enabled")).toHaveLength(1);
+  });
 });

@@ -93,7 +93,10 @@ export function ProfileEditorPage() {
             const updatedProfile = await updateProfile(profile.id, input);
 
             toast.success(`Saved ${updatedProfile.name}`, {
-              description: "Your local profile changes are ready for the next switch.",
+              description:
+                useProfilesStore.getState().activeProfileId === profile.id
+                  ? "Claude settings were updated on disk and backed up for the active profile."
+                  : "Your local profile changes are ready for the next switch.",
               timeout: 3600,
             });
           }
