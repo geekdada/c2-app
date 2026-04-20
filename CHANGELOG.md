@@ -1,3 +1,10 @@
+## [0.2.4](https://github.com/royli/c2-app/compare/v0.2.3...v0.2.4) (2026-04-20)
+
+
+### Bug Fixes
+
+* **profile-switch:** improve model override banner contrast in light mode ([c7f25a8](https://github.com/royli/c2-app/commit/c7f25a865902af3093b7717291b395b9f20d1840))
+
 ## [0.2.3](https://github.com/royli/c2-app/compare/v0.2.2...v0.2.3) (2026-04-15)
 
 ## [0.2.2](https://github.com/royli/c2-app/compare/v0.2.1...v0.2.2) (2026-04-15)
